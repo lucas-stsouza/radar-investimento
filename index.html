@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="escuro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar de Investimentos</title>
+<meta name="description" content="Panorama semanal do mercado financeiro nacional e internacional: Ibovespa, IFIX, Selic, IPCA, fundos imobiliários, ações, criptomoedas, S&P 500, Nasdaq, dólar e commodities.">
+<meta name="theme-color" content="#0b0f17">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0f17'/><path d='M18 68 L38 46 L54 58 L82 28' fill='none' stroke='%2334d399' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+</head>
+<body data-pagina="radar">
+
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- ====================== CABEÇALHO FIXO ====================== -->
+<header class="topo" id="topo">
+  <div class="topo__linha container">
+
+    <a class="marca" href="index.html">
+      <span class="marca__icone" aria-hidden="true">
+        <svg viewBox="0 0 100 100" width="34" height="34">
+          <rect width="100" height="100" rx="24" class="marca__fundo"/>
+          <path d="M18 68 L38 46 L54 58 L82 28" fill="none" class="marca__linha"
+                stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="82" cy="28" r="8" class="marca__ponto"/>
+        </svg>
+      </span>
+      <div class="marca__texto">
+        <h1 class="marca__nome">Radar de Investimentos</h1>
+        <p class="marca__sub">Panorama semanal do mercado</p>
+      </div>
+    </a>
+
+    <div class="topo__direita">
+      <div class="atualizacao" title="Data desta edição">
+        <span class="atualizacao__rotulo">Atualizado em</span>
+        <strong class="atualizacao__valor" id="dataAtualizacao">—</strong>
+        <span class="atualizacao__relativo" id="dataRelativa"></span>
+      </div>
+      <button class="btn-icone" id="btnTema" type="button" aria-label="Alternar tema claro e escuro">
+        <span class="btn-icone__sol" aria-hidden="true">☀</span>
+        <span class="btn-icone__lua" aria-hidden="true">☾</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Barra de navegação + acesso ao histórico -->
+  <nav class="navbar" aria-label="Seções do site">
+    <div class="container navbar__linha">
+      <ul class="navbar__links" id="navLinks">
+        <li><a href="#panorama">Panorama</a></li>
+        <li><a href="#brasil">Brasil</a></li>
+        <li><a href="#cripto">Criptomoedas</a></li>
+        <li><a href="#internacional">Internacional</a></li>
+        <li><a href="#commodities">Commodities</a></li>
+        <li><a href="#agenda">Agenda</a></li>
+        <li><a href="#glossario">Glossário</a></li>
+      </ul>
+
+      <div class="navbar__controles">
+        <a class="btn-historico" href="historico.html">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 2"/>
+          </svg>
+          Histórico
+          <span class="btn-historico__qtd" id="qtdEdicoes" hidden></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main id="conteudo">
+
+  <!-- Aviso de números ainda não conferidos (some sozinho) -->
+  <div class="aviso-exemplo" id="avisoExemplo" hidden>
+    <div class="container">
+      <strong><span id="qtdExemplo">0</span> indicadores ainda com número de exemplo:</strong>
+      <span id="listaExemplo"></span>.
+      Substitua no <code>js/dados.js</code> e apague a linha <code>exemplo: true</code> —
+      este aviso some quando não sobrar nenhum.
+    </div>
+  </div>
+
+  <!-- ====================== PANORAMA ====================== -->
+  <section class="secao secao--abertura" id="panorama">
+    <div class="container">
+      <div class="abertura">
+        <div class="abertura__texto">
+          <p class="secao__etiqueta">A semana em uma olhada</p>
+          <h2 class="abertura__titulo">Panorama</h2>
+          <p class="abertura__resumo" id="resumoSemana"></p>
+          <div class="mercados" id="statusDados"></div>
+        </div>
+        <div class="abertura__cards" id="cardsDestaque"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== RADAR DA SEMANA ====================== -->
+  <section class="secao" id="radar">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">O que moveu o mercado</p>
+          <h2 class="secao__titulo">Radar da semana</h2>
+        </div>
+      </header>
+      <div class="destaques" id="listaDestaques"></div>
+    </div>
+  </section>
+
+  <!-- ====================== BRASIL ====================== -->
+  <section class="secao" id="brasil">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Mercado nacional</p>
+          <h2 class="secao__titulo">Brasil</h2>
+        </div>
+        <p class="secao__apoio">Índices da B3, juros, inflação, câmbio, fundos imobiliários e ações.</p>
+      </header>
+
+      <h3 class="grupo__titulo">Índices da bolsa</h3>
+      <div class="grade" data-grupo="br-indices"></div>
+
+      <h3 class="grupo__titulo">Juros e inflação</h3>
+      <div class="grade" data-grupo="br-macro"></div>
+
+      <h3 class="grupo__titulo">Câmbio</h3>
+      <div class="grade" data-grupo="cambio"></div>
+
+      <h3 class="grupo__titulo">Fundos imobiliários</h3>
+      <div class="grade" data-grupo="br-fiis"></div>
+
+      <h3 class="grupo__titulo">Ações brasileiras</h3>
+      <div class="grade" data-grupo="br-acoes"></div>
+    </div>
+  </section>
+
+  <!-- ====================== CRIPTOMOEDAS ====================== -->
+  <section class="secao" id="cripto">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Ativos digitais</p>
+          <h2 class="secao__titulo">Criptomoedas</h2>
+        </div>
+        <p class="secao__apoio">Cotações em reais, atualizadas ao vivo. Classe de altíssimo risco.</p>
+      </header>
+      <div class="grade" data-grupo="cripto"></div>
+    </div>
+  </section>
+
+  <!-- ====================== INTERNACIONAL ====================== -->
+  <section class="secao" id="internacional">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Mercado global</p>
+          <h2 class="secao__titulo">Internacional</h2>
+        </div>
+        <p class="secao__apoio">Índices americanos, ETFs e as maiores empresas do mundo.</p>
+      </header>
+
+      <h3 class="grupo__titulo">Índices</h3>
+      <div class="grade" data-grupo="int-indices"></div>
+
+      <h3 class="grupo__titulo">ETFs</h3>
+      <div class="grade" data-grupo="int-etfs"></div>
+
+      <h3 class="grupo__titulo">Ações</h3>
+      <div class="grade" data-grupo="int-acoes"></div>
+    </div>
+  </section>
+
+  <!-- ====================== COMMODITIES ====================== -->
+  <section class="secao" id="commodities">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Matérias-primas</p>
+          <h2 class="secao__titulo">Commodities</h2>
+        </div>
+        <p class="secao__apoio">O que pesa em Petrobras, Vale e no preço do combustível.</p>
+      </header>
+      <div class="grade" data-grupo="commodities"></div>
+    </div>
+  </section>
+
+  <!-- ====================== AGENDA ====================== -->
+  <section class="secao" id="agenda">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Próximos dias</p>
+          <h2 class="secao__titulo">Agenda econômica</h2>
+        </div>
+        <p class="secao__apoio">Clique em qualquer linha para ver o dado na fonte oficial.</p>
+      </header>
+      <ol class="agenda" id="listaAgenda"></ol>
+      <div class="calendarios" id="listaCalendarios"></div>
+    </div>
+  </section>
+
+  <!-- ====================== GLOSSÁRIO ====================== -->
+  <section class="secao" id="glossario">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Para quem está começando</p>
+          <h2 class="secao__titulo">Entenda os termos</h2>
+        </div>
+      </header>
+      <div class="glossario" id="listaGlossario"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ====================== RODAPÉ ====================== -->
+<footer class="rodape">
+  <div class="container rodape__grade">
+    <div>
+      <p class="rodape__marca">Radar de Investimentos</p>
+      <p class="rodape__linha">
+        Edição de <strong id="rodapeData">—</strong>, por <span id="rodapeResponsavel">—</span>.
+      </p>
+      <p class="rodape__linha"><a class="rodape__link" href="historico.html">Ver edições anteriores →</a></p>
+    </div>
+    <div>
+      <p class="rodape__titulo">Fontes</p>
+      <p class="rodape__linha">B3, IBGE, Banco Central (SGS), FGV IBRE, AwesomeAPI, S&amp;P Dow Jones, Nasdaq, NYSE, CBOE, ICE.</p>
+    </div>
+    <div>
+      <p class="rodape__titulo">Aviso</p>
+      <p class="rodape__linha">
+        Conteúdo com finalidade informativa e educacional. Não constitui recomendação
+        de compra ou venda de qualquer ativo. Rentabilidade passada não garante
+        rentabilidade futura.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<button class="ao-topo" id="btnTopo" type="button" aria-label="Voltar ao topo">↑</button>
+
+<script src="js/dados.js"></script>
+<script src="js/historico.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
