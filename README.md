@@ -336,7 +336,7 @@ Connect. Provider URL `https://token.actions.githubusercontent.com`, audience
       "Condition": {
         "StringEquals": {
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-          "token.actions.githubusercontent.com:sub": "repo:lucas-stsouza/radar-investimento:ref:refs/heads/main"
+          "token.actions.githubusercontent.com:sub": "repo:lucas-stsouza@195336924/radar-investimento@1347947121:ref:refs/heads/main"
         }
       }
     }
@@ -346,6 +346,22 @@ Connect. Provider URL `https://token.actions.githubusercontent.com`, audience
 
 Aquele `sub` é a trava: **só** workflows rodando na `main` **desse** repositório
 conseguem assumir a role. Um fork ou outra branch não consegue.
+
+> **Atenção ao formato do `sub`.** O GitHub usa *immutable subject claims*: o
+> `sub` do token não vem como `repo:dono/repo:...`, e sim com os **IDs
+> numéricos** anexados — `repo:lucas-stsouza@195336924/radar-investimento@1347947121:...`
+> (195336924 = ID da conta, 1347947121 = ID do repositório). Os IDs nunca mudam,
+> nem se você renomear a conta ou o repositório, o que é justamente a vantagem:
+> um rename não transfere a confiança para quem tomar o nome antigo.
+>
+> Uma trust policy escrita no formato antigo falha com
+> `Not authorized to perform sts:AssumeRoleWithWebIdentity` — a mesma mensagem
+> genérica de ARN errado ou audience errado, o que torna o diagnóstico confuso.
+> Para descobrir o `sub` real de qualquer repositório, o caminho mais rápido é:
+>
+> ```bash
+> curl -s https://api.github.com/repos/DONO/REPO | grep -E '"id"|"login"'
+> ```
 
 **3. Permissão da role** — policy inline:
 
@@ -386,7 +402,7 @@ repository secret. Name `AWS_ROLE_ARN`, valor
 
 | Erro no log | Causa |
 |---|---|
-| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | o `sub` da trust policy não bate com o repositório/branch, ou o secret `AWS_ROLE_ARN` está errado |
+| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | o `sub` da trust policy não bate (veja o aviso sobre os IDs numéricos acima), o secret `AWS_ROLE_ARN` está errado, ou o audience do provedor não é `sts.amazonaws.com`. A mensagem é a mesma nos três casos |
 | `AccessDenied` no `s3 sync` | a policy da role não cobre o bucket |
 | `AccessDenied` no `create-invalidation` | falta a permissão de CloudFront, ou o ID da distribuição está errado |
 | o passo final acusa HTTP diferente de 200 | o site subiu mas não está sendo servido — veja o diagnóstico abaixo |
@@ -464,7 +480,7 @@ Atualizado em **30/08/2026**.
 com os selos "ao vivo" de câmbio, cripto e juros atualizando. Bucket criado e
 populado, bucket policy com OAC correta, `Default root object` resolvido.
 
-### 1. Deploy automático (em andamento)
+### 1. Deploy automático ✅ concluído
 
 Ordem importa — o secret do GitHub depende da role existir.
 
@@ -472,11 +488,12 @@ Ordem importa — o secret do GitHub depende da role existir.
       que o `site/` está completo, autentica por OIDC, sobe CSS/JS com
       `max-age=3600`, sobe os HTML com `no-cache`, invalida o CloudFront, espera
       a invalidação e confere que a raiz responde 200.
-- [ ] **AWS**: Identity Provider, Role e policy — passos 1 a 3 acima.
-      **Faça isto antes do push**, senão a primeira execução falha na autenticação.
-- [ ] **GitHub**: secret `AWS_ROLE_ARN` com o ARN da role.
-- [ ] **Commit e push** do workflow na `main`.
-- [ ] **Testar** pelo botão Run workflow antes de confiar no push.
+- [x] **AWS**: Identity Provider, Role `github-actions-radar-deploy` e policy
+      `publicar-radar` criados.
+- [x] **GitHub**: secret `AWS_ROLE_ARN` cadastrado.
+- [x] **Testado e no ar em 30/08/2026.** Primeira publicação automática
+      confirmada pelos cabeçalhos: `public, max-age=3600` no CSS/JS e
+      `no-cache` nos HTML.
 
 ### 2. Domínio próprio
 
