@@ -44,6 +44,28 @@ jobs:
           done
           echo "site/ ok — $(find site -type f | wc -l) arquivos"
 
+      # TEMPORARIO — diagnostico do OIDC. Remover assim que a causa aparecer.
+      # Imprime so as claims decodificadas do token; nunca o token em si.
+      - name: DEBUG — o que o GitHub esta mandando
+        env:
+          ROLE: ${{ secrets.AWS_ROLE_ARN }}
+        run: |
+          echo "tamanho do ARN no secret: ${#ROLE}  (esperado: 58)"
+          echo
+          python3 - <<'PY'
+          import os, json, base64, urllib.request
+          url = os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=sts.amazonaws.com"
+          req = urllib.request.Request(url, headers={
+              "Authorization": "bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]})
+          tok = json.load(urllib.request.urlopen(req))["value"]
+          corpo = tok.split(".")[1]
+          corpo += "=" * (-len(corpo) % 4)
+          c = json.loads(base64.urlsafe_b64decode(corpo))
+          print("--- claims do token OIDC ---")
+          for k in ("iss", "aud", "sub", "repository", "repository_owner", "ref", "event_name"):
+              print("%-18s %r" % (k, c.get(k)))
+          PY
+
       - name: Pegar credencial temporária da AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
