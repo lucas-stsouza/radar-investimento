@@ -1,0 +1,82 @@
+name: Publicar no S3
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Necessário para o OIDC: o GitHub emite um token de identidade
+# que a AWS troca por uma credencial temporária.
+permissions:
+  id-token: write
+  contents: read
+
+# Duas publicações ao mesmo tempo não podem se atropelar.
+concurrency:
+  group: publicar-radar
+  cancel-in-progress: false
+
+env:
+  BUCKET: investimento.bloglm.com.br
+  REGIAO: us-east-2
+  DISTRIBUICAO: E1AKI0YMNC0GKL
+  SITE: https://d2ozvuv8754sun.cloudfront.net
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Validar o JavaScript
+        run: |
+          node --check site/js/dados.js
+          node --check site/js/historico.js
+          node --check site/js/app.js
+
+      - name: Conferir que o site está completo
+        run: |
+          for f in index.html historico.html css/style.css \
+                   js/app.js js/dados.js js/historico.js; do
+            test -f "site/$f" || { echo "::error::faltando site/$f"; exit 1; }
+          done
+          echo "site/ ok — $(find site -type f | wc -l) arquivos"
+
+      - name: Pegar credencial temporária da AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-2
+
+      # Sem --delete: o histórico já publicado no bucket permanece intacto.
+      - name: Subir CSS e JS (cache de 1 hora)
+        run: |
+          aws s3 sync site/ s3://$BUCKET/ \
+            --exclude "*.html" \
+            --cache-control "public, max-age=3600" \
+            --region $REGIAO
+
+      - name: Subir os HTML (sem cache)
+        run: |
+          aws s3 sync site/ s3://$BUCKET/ \
+            --exclude "*" --include "*.html" \
+            --cache-control "no-cache" \
+            --region $REGIAO
+
+      - name: Limpar o cache do CloudFront
+        run: |
+          ID=$(aws cloudfront create-invalidation \
+                 --distribution-id $DISTRIBUICAO \
+                 --paths "/*" \
+                 --query 'Invalidation.Id' --output text)
+          echo "invalidação $ID criada, esperando terminar..."
+          aws cloudfront wait invalidation-completed \
+            --distribution-id $DISTRIBUICAO --id $ID
+
+      - name: Conferir que o site respondeu
+        run: |
+          CODIGO=$(curl -s -o /dev/null -w "%{http_code}" $SITE/)
+          echo "GET $SITE/ → HTTP $CODIGO"
+          test "$CODIGO" = "200" || { echo "::error::site não respondeu 200"; exit 1; }

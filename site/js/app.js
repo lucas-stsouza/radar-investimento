@@ -1,8 +1,9 @@
 /* ==========================================================================
    RADAR DE INVESTIMENTOS — APLICAÇÃO
-   Um único motor para as duas páginas:
-     index.html      (data-pagina="radar")     → a edição da semana
-     historico.html  (data-pagina="historico") → as edições arquivadas
+   Um único motor para três modos, escolhidos por body[data-pagina]:
+     "radar"      index.html                  → a edição da semana, com dado ao vivo
+     "historico"  historico.html              → a linha do tempo das edições
+     "arquivo"    historico/AAAA-MM-DD.html   → um snapshot congelado, sem rede
    Você normalmente NÃO precisa mexer neste arquivo.
    ========================================================================== */
 (function () {
@@ -482,13 +483,13 @@
       lista.outerHTML =
         '<div class="vazio">' +
           "<p><strong>Nenhuma edição arquivada ainda.</strong></p>" +
-          "<p>Antes de atualizar o <code>js/dados.js</code> na próxima semana, abra o " +
-          "radar, aperte F12 para abrir o console do navegador, rode " +
-          "<code>radarArquivar()</code> e cole o resultado no topo de " +
-          "<code>js/historico.js</code>.</p>" +
+          "<p>A primeira edição vai para o arquivo quando a próxima for fechada. " +
+          "Isso acontece sozinho no comando <code>/atualizar-radar</code>, que roda " +
+          "<code>ferramentas/arquivar.mjs</code> antes de trocar os números.</p>" +
           "<p>A partir daí esta página vira a linha do tempo do site: dá para reabrir " +
-          "qualquer semana passada, os mini-gráficos dos cards começam a ser desenhados " +
-          "e cada card ganha a variação desde a edição anterior.</p>" +
+          "qualquer semana passada, cada edição ganha também um arquivo congelado em " +
+          "<code>historico/AAAA-MM-DD.html</code>, os mini-gráficos dos cards começam " +
+          "a ser desenhados e cada card ganha a variação desde a edição anterior.</p>" +
           '<p><a class="rodape__link" href="index.html">← Voltar ao radar da semana</a></p>' +
         "</div>";
       texto("dataAtualizacao", "—");
@@ -506,7 +507,14 @@
                      escapar(e.responsavel || "—") + "</span>" +
                  "</div>" +
                  (e.resumo ? "<p>" + escapar(e.resumo) + "</p>" : "") +
-                 '<button type="button" class="edicao-item__btn">Ver esta edição</button>' +
+                 '<div class="edicao-item__acoes">' +
+                   '<button type="button" class="edicao-item__btn">Ver esta edição</button>' +
+                   (e.arquivo && /^[\w./-]+\.html$/.test(e.arquivo)
+                     ? '<a class="edicao-item__btn edicao-item__btn--pagina" href="' +
+                       escapar(e.arquivo) + '" title="Abre o arquivo congelado daquele dia, ' +
+                       'exatamente como a página estava">Abrir a página daquele dia &rarr;</a>'
+                     : "") +
+                 "</div>" +
                "</div>" +
              "</li>";
     }).join("");
@@ -749,42 +757,6 @@
   }
 
   /* ====================================================================
-     9. FERRAMENTA DE ARQUIVAMENTO
-     Rode radarArquivar() no console antes de atualizar o dados.js.
-     ==================================================================== */
-
-  window.radarArquivar = function () {
-    var linhas = RADAR.ativos.map(function (a) {
-      var partes = ['id: "' + a.id + '"', "valor: " + a.valor];
-      if (isFinite(a.variacao12m) && a.variacao12m !== null) {
-        partes.push("variacao12m: " + Number(a.variacao12m.toFixed(2)));
-      }
-      if (isFinite(a.dy) && a.dy !== null && a.dy !== undefined) partes.push("dy: " + a.dy);
-      return "      { " + partes.join(", ") + " }";
-    });
-
-    var j = function (v) { return JSON.stringify(v); };
-    var bloco =
-      "  {\n" +
-      "    atualizadoEm: " + j(RADAR.meta.atualizadoEm) + ",\n" +
-      "    responsavel:  " + j(RADAR.meta.responsavel || "") + ",\n" +
-      "    resumo:       " + j(RADAR.resumo) + ",\n" +
-      "    destaques:    " + JSON.stringify(RADAR.destaques) + ",\n" +
-      "    agenda:       " + JSON.stringify(RADAR.agenda) + ",\n" +
-      "    ativos: [\n" + linhas.join(",\n") + "\n    ]\n" +
-      "  },";
-
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(bloco).then(function () {
-        console.log("%cCopiado! Cole no topo da lista em js/historico.js",
-                    "color:#34d399;font-weight:bold");
-      }, function () {});
-    }
-    console.log(bloco);
-    return bloco;
-  };
-
-  /* ====================================================================
      10. INÍCIO
      ==================================================================== */
 
@@ -801,9 +773,15 @@
     } else {
       renderizar(RADAR);
       montarGlossario();
-      var badge = $("qtdEdicoes");
-      if (badge && HIST.length) { badge.textContent = HIST.length; badge.hidden = false; }
-      atualizarAoVivo();
+      if (PAGINA === "arquivo") {
+        // Edição congelada (historico/AAAA-MM-DD.html): os números são do dia
+        // em que ela esteve no ar. Buscar dado novo aqui estragaria o arquivo.
+        chipDados("Valores congelados nesta edição", false);
+      } else {
+        var badge = $("qtdEdicoes");
+        if (badge && HIST.length) { badge.textContent = HIST.length; badge.hidden = false; }
+        atualizarAoVivo();
+      }
     }
 
     ligarNavegacao();

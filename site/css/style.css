@@ -142,6 +142,29 @@ code {
   letter-spacing: .04em; text-transform: uppercase; margin-top: 2px;
 }
 
+/* selo de conteúdo montado com auxílio de IA */
+.marca__linha1 { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.selo-ia {
+  display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;
+  padding: 3px 8px 3px 6px; border-radius: 999px;
+  font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #fff; cursor: help;
+  background: linear-gradient(135deg, #7c5cff 0%, #5b7cfa 100%);
+  border: 1px solid rgba(255, 255, 255, .22);
+  box-shadow: 0 1px 6px -1px rgba(124, 92, 255, .55);
+}
+.selo-ia svg { flex: none; opacity: .95; }
+
+/* botões da linha do tempo do histórico */
+.edicao-item__acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.edicao-item__acoes .edicao-item__btn { margin-top: 0; }
+.edicao-item__btn--pagina {
+  display: inline-block; color: var(--destaque);
+  border-color: color-mix(in srgb, var(--destaque) 40%, transparent);
+}
+.edicao-item__btn--pagina:hover { border-color: var(--destaque); }
+.edicao-item--ativa .edicao-item__btn--pagina { display: inline-block; }
+
 .topo__direita { display: flex; align-items: center; gap: 14px; }
 
 .atualizacao {

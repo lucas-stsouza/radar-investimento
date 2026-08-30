@@ -1,30 +1,43 @@
 /* ==========================================================================
    RADAR DE INVESTIMENTOS — EDIÇÃO ATUAL
    --------------------------------------------------------------------------
-   ESTE É O ARQUIVO QUE VOCÊ EDITA TODA SEMANA.
+   Este arquivo guarda a edição que está no ar.
 
-   Rotina (leva ~10 min):
-     1. Rode radarArquivar() no console e cole o resultado no topo de
-        js/historico.js — isso guarda a edição da semana passada.
-     2. Troque "atualizadoEm" pela data/hora de agora.
-     3. Atualize "valor", "variacao12m" e "dy" de cada ativo.
-     4. Reescreva "resumo", "destaques" e "agenda".
-     5. Apague a linha "exemplo: true" dos ativos que você já preencheu
-        com número real — o aviso amarelo do topo some sozinho quando
-        não sobrar nenhum.
+   VOCÊ NÃO PRECISA DIGITAR NÚMERO AQUI. A rotina semanal é o comando
+   /atualizar-radar, que faz tudo em ordem:
 
-   NÃO existe mais campo "historico" aqui: os mini-gráficos são montados a
-   partir das edições guardadas em js/historico.js e das APIs ao vivo.
+     1. node ferramentas/arquivar.mjs    congela a edição que está no ar em
+                                         historico/AAAA-MM-DD.html
+     2. node ferramentas/coletar.mjs --escrever
+                                         busca os 55 ativos nas fontes e
+                                         reescreve "valor", "variacao12m",
+                                         "dy" e "atualizadoEm" aqui
+     3. o texto (resumo, destaques, agenda) é reescrito à mão, com base em
+        notícia apurada — é a única parte que não dá para automatizar
 
-   Câmbio (USD, EUR, BTC), Selic, CDI, IPCA e IGP-M são buscados AO VIVO
-   quando o site está online. Os valores abaixo servem de reserva.
+   Se quiser rodar só a coleta, sem arquivar:
+     node ferramentas/coletar.mjs              (mostra sem gravar)
+     node ferramentas/coletar.mjs --escrever   (grava)
+
+   REGRA: nenhum número entra aqui sem estar confirmado na fonte. O que a
+   coleta não conseguir confirmar mantém o valor anterior e é listado no
+   relatório. Se algum dia um valor for provisório, marque o ativo com
+   "exemplo: true" — a tarja amarela do topo lista os pendentes e some
+   sozinha quando não sobrar nenhum.
+
+   NÃO existe campo "historico" aqui: os mini-gráficos são montados a partir
+   das edições guardadas em js/historico.js e das APIs ao vivo.
+
+   Câmbio, criptos, Selic, CDI, IPCA e IGP-M também se atualizam sozinhos no
+   navegador, a cada visita. Os valores abaixo são a foto da última coleta e
+   servem de reserva se a API estiver fora do ar.
    ========================================================================== */
 
 const RADAR = {
 
   meta: {
     // Data/hora desta edição. Formato: AAAA-MM-DDTHH:MM
-    atualizadoEm: "2026-08-26T18:30",
+    atualizadoEm: "2026-08-29T15:14",
     // Quem fechou a edição (aparece no rodapé e no histórico)
     responsavel: "Equipe Radar"
   },
@@ -148,34 +161,33 @@ const RADAR = {
      ------------------------------------------------------------------------ */
   ativos: [
 
-    /* ===== BRASIL — ÍNDICES ==============================================
-       TODO: substituir pelos números reais e apagar "exemplo: true".        */
+    /* ===== BRASIL — ÍNDICES ============================================== */
     {
-      id: "ibovespa", grupo: "br-indices", destaque: true, exemplo: true,
+      id: "ibovespa", grupo: "br-indices", destaque: true,
       nome: "Ibovespa", ticker: "IBOV", formato: "pontos",
       descricao: "As ~85 ações mais negociadas da B3. É o termômetro da bolsa brasileira.",
-      valor: 142380, variacao12m: 8.41,
+      valor: 175664.62, variacao12m: 24.54,
       fonte: "B3"
     },
     {
-      id: "ifix", grupo: "br-indices", exemplo: true,
+      id: "ifix", grupo: "br-indices",
       nome: "IFIX", ticker: "IFIX", formato: "pontos",
       descricao: "Índice dos fundos imobiliários listados na B3.",
-      valor: 3486, variacao12m: 3.15,
+      valor: 3740.72, variacao12m: null,
       fonte: "B3"
     },
     {
-      id: "smll", grupo: "br-indices", exemplo: true,
+      id: "smll", grupo: "br-indices",
       nome: "Small Caps", ticker: "SMLL", formato: "pontos",
       descricao: "Empresas de menor valor de mercado. Costuma oscilar mais que o Ibovespa.",
-      valor: 2418, variacao12m: 6.02,
+      valor: 2123.4, variacao12m: null,
       fonte: "B3"
     },
     {
-      id: "idiv", grupo: "br-indices", exemplo: true,
+      id: "idiv", grupo: "br-indices",
       nome: "Dividendos", ticker: "IDIV", formato: "pontos",
       descricao: "Ações que mais pagaram proventos nos últimos anos.",
-      valor: 9214, variacao12m: 11.07,
+      valor: 12292.07, variacao12m: null,
       fonte: "B3"
     },
 
@@ -184,35 +196,35 @@ const RADAR = {
       id: "selic", grupo: "br-macro", destaque: true,
       nome: "Selic (meta)", ticker: "SELIC", formato: "percentual", sufixo: "a.a.",
       descricao: "Taxa básica de juros definida pelo Copom. Referência de toda a renda fixa.",
-      valor: 14.00, variacao12m: 0.75,
+      valor: 14, variacao12m: -1,
       fonte: "Banco Central (SGS 432)", aoVivo: "sgs-432"
     },
     {
       id: "cdi", grupo: "br-macro",
       nome: "CDI", ticker: "CDI", formato: "percentual", sufixo: "a.a.",
       descricao: "Referência da renda fixa privada. Anda praticamente colado na Selic.",
-      valor: 13.90, variacao12m: 0.75,
+      valor: 13.9, variacao12m: -1,
       fonte: "Banco Central (SGS 4389)", aoVivo: "sgs-4389"
     },
     {
       id: "ipca12", grupo: "br-macro", destaque: true, inverso: true,
       nome: "IPCA (12 meses)", ticker: "IPCA", formato: "percentual",
       descricao: "Inflação oficial acumulada em 12 meses. É o que corrói o poder de compra.",
-      valor: 4.44, variacao12m: -0.07,
+      valor: 4.44, variacao12m: -0.79,
       fonte: "IBGE / BCB (SGS 13522)", aoVivo: "sgs-13522"
     },
     {
       id: "ipcaMes", grupo: "br-macro", inverso: true,
       nome: "IPCA (mês)", ticker: "IPCA-M", formato: "percentual",
       descricao: "Variação da inflação no último mês fechado.",
-      valor: 0.07, variacao12m: -0.35,
+      valor: 0.07, variacao12m: -0.19,
       fonte: "IBGE / BCB (SGS 433)", aoVivo: "sgs-433"
     },
     {
       id: "igpm", grupo: "br-macro", inverso: true,
       nome: "IGP-M (12 meses)", ticker: "IGP-M", formato: "percentual",
       descricao: "Índice de inflação usado no reajuste de aluguéis e contratos.",
-      valor: 2.77, variacao12m: -1.17,
+      valor: 2.18, variacao12m: -0.85,
       fonte: "FGV / BCB (SGS 189)", aoVivo: "sgs-189"
     },
 
@@ -221,14 +233,14 @@ const RADAR = {
       id: "usdbrl", grupo: "cambio", destaque: true,
       nome: "Dólar comercial", ticker: "USD/BRL", formato: "brl", casas: 4,
       descricao: "Quanto custa 1 dólar em reais. Afeta inflação, viagens e importados.",
-      valor: 5.1465, variacao12m: -4.35,
+      valor: 5.185, variacao12m: -4.16,
       fonte: "AwesomeAPI", aoVivo: "moeda-USD"
     },
     {
       id: "eurbrl", grupo: "cambio",
       nome: "Euro", ticker: "EUR/BRL", formato: "brl", casas: 4,
       descricao: "Cotação do euro em reais.",
-      valor: 5.9952, variacao12m: -2.10,
+      valor: 6.0056, variacao12m: -4.69,
       fonte: "AwesomeAPI", aoVivo: "moeda-EUR"
     },
 
@@ -240,49 +252,49 @@ const RADAR = {
       id: "btcbrl", grupo: "cripto", destaque: false,
       nome: "Bitcoin", ticker: "BTC/BRL", formato: "brl",
       descricao: "A maior e mais líquida das criptomoedas. Serve de termômetro do apetite a risco.",
-      valor: 406970, variacao12m: -33.26,
+      valor: 406967, variacao12m: -32.72,
       fonte: "AwesomeAPI", aoVivo: "moeda-BTC"
     },
     {
       id: "ethbrl", grupo: "cripto",
       nome: "Ethereum", ticker: "ETH/BRL", formato: "brl",
       descricao: "Segunda maior cripto. É a rede onde roda a maior parte dos contratos inteligentes.",
-      valor: 12870, variacao12m: -45.72,
+      valor: 12761.3, variacao12m: -45.66,
       fonte: "AwesomeAPI", aoVivo: "moeda-ETH"
     },
     {
       id: "bnbbrl", grupo: "cripto",
       nome: "BNB", ticker: "BNB/BRL", formato: "brl",
       descricao: "Moeda do ecossistema da Binance, a maior corretora de cripto do mundo.",
-      valor: 3632.00, variacao12m: -22.21,
+      valor: 3601, variacao12m: -21.87,
       fonte: "AwesomeAPI", aoVivo: "moeda-BNB"
     },
     {
       id: "solbrl", grupo: "cripto",
       nome: "Solana", ticker: "SOL/BRL", formato: "brl",
       descricao: "Rede concorrente do Ethereum, conhecida por transações rápidas e baratas.",
-      valor: 519.90, variacao12m: -54.74,
+      valor: 546.7, variacao12m: -50.54,
       fonte: "AwesomeAPI", aoVivo: "moeda-SOL"
     },
     {
       id: "xrpbrl", grupo: "cripto",
       nome: "XRP", ticker: "XRP/BRL", formato: "brl",
       descricao: "Criada para transferências internacionais entre instituições financeiras.",
-      valor: 7.25, variacao12m: -53.78,
+      valor: 7.25, variacao12m: -52.49,
       fonte: "AwesomeAPI", aoVivo: "moeda-XRP"
     },
     {
       id: "dogebrl", grupo: "cripto",
       nome: "Dogecoin", ticker: "DOGE/BRL", formato: "brl", casas: 4,
       descricao: "Nasceu como piada e virou a principal “meme coin”. Muito sensível a notícias.",
-      valor: 0.45, variacao12m: -62.03,
+      valor: 0.4433, variacao12m: -61.8,
       fonte: "AwesomeAPI", aoVivo: "moeda-DOGE"
     },
     {
       id: "ltcbrl", grupo: "cripto",
       nome: "Litecoin", ticker: "LTC/BRL", formato: "brl",
       descricao: "Uma das criptos mais antigas, criada como versão mais leve do Bitcoin.",
-      valor: 257.70, variacao12m: -57.93,
+      valor: 253.9, variacao12m: -58.14,
       fonte: "AwesomeAPI", aoVivo: "moeda-LTC"
     },
 
@@ -292,56 +304,56 @@ const RADAR = {
       nome: "PLAG11", ticker: "PLAG11", formato: "brl",
       descricao: "Fundo listado na B3.",
       nota: "Confira o segmento do fundo e complete esta descrição.",
-      valor: 61.84, variacao12m: 36.36, dy: 10.96,
+      valor: 62, variacao12m: 25.25, dy: 10.16,
       fonte: "B3"
     },
     {
       id: "mcci11", grupo: "br-fiis",
       nome: "MCCI11", ticker: "MCCI11", formato: "brl",
       descricao: "FII de papel: investe em CRIs (títulos de dívida imobiliária).",
-      valor: 94.53, variacao12m: 22.86, dy: 12.69,
+      valor: 94.99, variacao12m: 11.49, dy: 12.63,
       fonte: "B3"
     },
     {
       id: "kncr11", grupo: "br-fiis",
       nome: "KNCR11", ticker: "KNCR11", formato: "brl",
       descricao: "FII de papel com CRIs atrelados ao CDI. Rende mais quando a Selic está alta.",
-      valor: 106.98, variacao12m: 13.92, dy: 13.40,
+      valor: 107.59, variacao12m: 2.56, dy: 13.32,
       fonte: "B3"
     },
     {
       id: "cpts11", grupo: "br-fiis",
       nome: "CPTS11", ticker: "CPTS11", formato: "brl",
       descricao: "FII de papel, com CRIs e cotas de outros fundos imobiliários.",
-      valor: 7.37, variacao12m: 12.01, dy: 14.59,
+      valor: 7.46, variacao12m: 1.22, dy: 14.41,
       fonte: "B3"
     },
     {
       id: "brco11", grupo: "br-fiis",
       nome: "BRCO11", ticker: "BRCO11", formato: "brl",
       descricao: "FII de tijolo: galpões logísticos alugados para grandes operadores.",
-      valor: 112.45, variacao12m: 9.84, dy: 9.71,
+      valor: 113.1, variacao12m: 2.79, dy: 9.66,
       fonte: "B3"
     },
     {
       id: "xpml11", grupo: "br-fiis",
       nome: "XPML11", ticker: "XPML11", formato: "brl",
       descricao: "FII de tijolo: participação em shopping centers pelo país.",
-      valor: 98.00, variacao12m: 5.77, dy: 11.27,
+      valor: 99.9, variacao12m: -0.24, dy: 11.05,
       fonte: "B3"
     },
     {
       id: "mxrf11", grupo: "br-fiis",
       nome: "MXRF11", ticker: "MXRF11", formato: "brl",
       descricao: "FII híbrido e o mais popular do país, com cota de valor baixo.",
-      valor: 9.20, variacao12m: 5.50, dy: 12.99,
+      valor: 9.3, variacao12m: -2.72, dy: 12.84,
       fonte: "B3"
     },
     {
       id: "visc11", grupo: "br-fiis",
       nome: "VISC11", ticker: "VISC11", formato: "brl",
       descricao: "FII de tijolo: carteira de shopping centers.",
-      valor: 101.04, variacao12m: 4.91, dy: 9.83,
+      valor: 102.08, variacao12m: -1.01, dy: 9.73,
       fonte: "B3"
     },
     {
@@ -349,21 +361,21 @@ const RADAR = {
       nome: "GARE11", ticker: "GARE11", formato: "brl",
       descricao: "FII de renda urbana: imóveis alugados no varejo e na logística.",
       nota: "Confira o segmento do fundo e complete esta descrição.",
-      valor: 8.28, variacao12m: -0.84, dy: 12.03,
+      valor: 8.43, variacao12m: -6.33, dy: 10.83,
       fonte: "B3"
     },
     {
       id: "xplg11", grupo: "br-fiis",
       nome: "XPLG11", ticker: "XPLG11", formato: "brl",
       descricao: "FII de tijolo: galpões logísticos e industriais.",
-      valor: 90.22, variacao12m: -1.33, dy: 10.95,
+      valor: 91.28, variacao12m: -7.01, dy: 10.78,
       fonte: "B3"
     },
     {
       id: "rbrr11", grupo: "br-fiis",
       nome: "RBRR11", ticker: "RBRR11", formato: "brl",
       descricao: "FII de papel focado em CRIs de baixo risco de crédito (high grade).",
-      valor: 74.00, variacao12m: -7.30, dy: 13.35,
+      valor: 73.63, variacao12m: -15.37, dy: 13.42,
       fonte: "B3"
     },
 
@@ -372,35 +384,35 @@ const RADAR = {
       id: "vale3", grupo: "br-acoes",
       nome: "Vale", ticker: "VALE3", formato: "brl",
       descricao: "Maior mineradora do país. O resultado acompanha o minério de ferro e a China.",
-      valor: 77.13, variacao12m: 46.00, dy: 7.28,
+      valor: 78.58, variacao12m: 41.84, dy: 7.14,
       fonte: "B3"
     },
     {
       id: "itsa4", grupo: "br-acoes",
       nome: "Itaúsa", ticker: "ITSA4", formato: "brl",
       descricao: "Holding que controla o Itaú Unibanco e tem participação em empresas industriais.",
-      valor: 12.65, variacao12m: 28.17, dy: 8.99,
+      valor: 12.95, variacao12m: 18.15, dy: 8.7,
       fonte: "B3"
     },
     {
       id: "bbse3", grupo: "br-acoes",
       nome: "BB Seguridade", ticker: "BBSE3", formato: "brl",
       descricao: "Braço de seguros e previdência do Banco do Brasil. Conhecida por dividendos altos.",
-      valor: 38.10, variacao12m: 26.75, dy: 12.05,
+      valor: 40.02, variacao12m: 22.99, dy: 11.47,
       fonte: "B3"
     },
     {
       id: "cmin3", grupo: "br-acoes",
       nome: "CSN Mineração", ticker: "CMIN3", formato: "brl",
       descricao: "Braço de mineração da CSN. Também depende do preço do minério de ferro.",
-      valor: 5.87, variacao12m: 24.63, dy: 6.57,
+      valor: 6, variacao12m: 15.83, dy: 6.43,
       fonte: "B3"
     },
     {
       id: "cmig3", grupo: "br-acoes",
       nome: "Cemig", ticker: "CMIG3", formato: "brl",
       descricao: "Elétrica de Minas Gerais. Setor regulado, receita previsível.",
-      valor: 15.61, variacao12m: 12.63, dy: 5.28,
+      valor: 15.76, variacao12m: 5.07, dy: 8.86,
       fonte: "B3"
     },
     {
@@ -408,51 +420,51 @@ const RADAR = {
       nome: "Amazon (BDR)", ticker: "AMZO34", formato: "brl",
       descricao: "BDR da Amazon: um recibo negociado na B3 que dá exposição à ação americana.",
       nota: "Mesma exposição de AMZN — se você acompanha as duas, conte a posição uma vez só.",
-      valor: 67.18, variacao12m: 7.92, dy: 0,
+      valor: 69.35, variacao12m: 10.68, dy: 0,
       fonte: "B3"
     },
     {
       id: "bbas3", grupo: "br-acoes",
       nome: "Banco do Brasil", ticker: "BBAS3", formato: "brl",
       descricao: "Banco público com forte presença no crédito rural.",
-      valor: 18.60, variacao12m: -7.51, dy: 2.96,
+      valor: 20.17, variacao12m: -4.18, dy: 2.73,
       fonte: "B3"
     },
     {
       id: "viva3", grupo: "br-acoes",
       nome: "Vivara", ticker: "VIVA3", formato: "brl",
       descricao: "Maior rede de joalherias do país. Varejo sensível a juros e renda.",
-      valor: 21.99, variacao12m: -19.56, dy: 3.18,
+      valor: 21.97, variacao12m: -23.98, dy: 3.18,
       fonte: "B3"
     },
 
     /* ===== INTERNACIONAL — ÍNDICES ======================================= */
     {
-      id: "sp500", grupo: "int-indices", destaque: true, exemplo: true,
+      id: "sp500", grupo: "int-indices", destaque: true,
       nome: "S&P 500", ticker: "SPX", formato: "pontos",
       descricao: "As 500 maiores empresas dos EUA. A principal referência de bolsa no mundo.",
-      valor: 6142, variacao12m: 12.85,
+      valor: 7711.76, variacao12m: 19.37,
       fonte: "S&P Dow Jones"
     },
     {
-      id: "nasdaq", grupo: "int-indices", destaque: true, exemplo: true,
+      id: "nasdaq", grupo: "int-indices", destaque: true,
       nome: "Nasdaq Composite", ticker: "IXIC", formato: "pontos",
       descricao: "Concentra as empresas de tecnologia. Mais volátil que o S&P 500.",
-      valor: 20415, variacao12m: 16.22,
+      valor: 26402.42, variacao12m: 23.06,
       fonte: "Nasdaq"
     },
     {
-      id: "dowjones", grupo: "int-indices", exemplo: true,
+      id: "dowjones", grupo: "int-indices",
       nome: "Dow Jones", ticker: "DJI", formato: "pontos",
       descricao: "30 grandes empresas tradicionais dos EUA. Menos exposto a tecnologia.",
-      valor: 44780, variacao12m: 7.05,
+      valor: 53559.99, variacao12m: 17.6,
       fonte: "S&P Dow Jones"
     },
     {
-      id: "vix", grupo: "int-indices", inverso: true, exemplo: true,
+      id: "vix", grupo: "int-indices", inverso: true,
       nome: "VIX — índice do medo", ticker: "VIX", formato: "pontos",
       descricao: "Mede o nervosismo do mercado. Acima de 20 = tensão; abaixo de 15 = calmaria.",
-      valor: 14.2, variacao12m: -12.4,
+      valor: 14.43, variacao12m: 0,
       fonte: "CBOE"
     },
 
@@ -461,7 +473,7 @@ const RADAR = {
       id: "voo", grupo: "int-etfs",
       nome: "Vanguard S&P 500", ticker: "VOO", formato: "usd",
       descricao: "ETF que replica o S&P 500. Uma cota = pedacinho das 500 maiores empresas dos EUA.",
-      valor: 704.02, variacao12m: null,
+      valor: 707.24, variacao12m: 19.25,
       fonte: "NYSE Arca"
     },
     {
@@ -469,7 +481,7 @@ const RADAR = {
       nome: "VanEck Pharmaceutical", ticker: "PPH", formato: "usd",
       descricao: "ETF setorial: cesta das maiores farmacêuticas do mundo.",
       nota: "Preço com um dia de defasagem em relação aos demais ativos internacionais.",
-      valor: 116.48, variacao12m: null,
+      valor: 113.62, variacao12m: 27.84,
       fonte: "Nasdaq"
     },
 
@@ -478,28 +490,28 @@ const RADAR = {
       id: "nvda", grupo: "int-acoes",
       nome: "Nvidia", ticker: "NVDA", formato: "usd",
       descricao: "Líder em chips para inteligência artificial.",
-      valor: 213.05, variacao12m: null,
+      valor: 217.55, variacao12m: 24.9,
       fonte: "Nasdaq"
     },
     {
       id: "googl", grupo: "int-acoes",
       nome: "Alphabet (Google)", ticker: "GOOGL", formato: "usd",
       descricao: "Dona do Google, do YouTube e do Android.",
-      valor: 349.90, variacao12m: null,
+      valor: 346.59, variacao12m: 62.79,
       fonte: "Nasdaq"
     },
     {
       id: "tsla", grupo: "int-acoes",
       nome: "Tesla", ticker: "TSLA", formato: "usd",
       descricao: "Carros elétricos, energia e robótica.",
-      valor: 350.25, variacao12m: null,
+      valor: 348.75, variacao12m: 4.46,
       fonte: "Nasdaq"
     },
     {
       id: "aapl", grupo: "int-acoes",
       nome: "Apple", ticker: "AAPL", formato: "usd",
       descricao: "iPhone e serviços; disputa o posto de maior empresa do mundo.",
-      valor: 309.90, variacao12m: null,
+      valor: 319.7, variacao12m: 37.72,
       fonte: "Nasdaq"
     },
     {
@@ -507,58 +519,58 @@ const RADAR = {
       nome: "Amazon", ticker: "AMZN", formato: "usd",
       descricao: "E-commerce e AWS, a maior provedora de nuvem do mundo.",
       nota: "Mesma exposição do BDR AMZO34, listado na seção de ações brasileiras.",
-      valor: 261.06, variacao12m: null,
+      valor: 266.43, variacao12m: 16.34,
       fonte: "Nasdaq"
     },
     {
       id: "ko", grupo: "int-acoes",
       nome: "Coca-Cola", ticker: "KO", formato: "usd",
       descricao: "Consumo defensivo: vende bem em qualquer ciclo econômico.",
-      valor: 91.64, variacao12m: null,
+      valor: 89.66, variacao12m: 29.96,
       fonte: "NYSE"
     },
     {
       id: "crwd", grupo: "int-acoes",
       nome: "CrowdStrike", ticker: "CRWD", formato: "usd",
       descricao: "Cibersegurança em nuvem. Crescimento alto e múltiplo caro.",
-      valor: 185.38, variacao12m: null,
+      valor: 218.4, variacao12m: 106.18,
       fonte: "Nasdaq"
     },
     {
       id: "nke", grupo: "int-acoes",
       nome: "Nike", ticker: "NKE", formato: "usd",
       descricao: "Maior marca de artigos esportivos do mundo.",
-      valor: 39.48, variacao12m: null,
+      valor: 39.6, variacao12m: -48.82,
       fonte: "NYSE"
     },
     {
-      id: "msft", grupo: "int-acoes", exemplo: true,
+      id: "msft", grupo: "int-acoes",
       nome: "Microsoft", ticker: "MSFT", formato: "usd",
       descricao: "Windows, nuvem Azure e participação relevante em IA.",
-      valor: 468.90, variacao12m: 13.4,
+      valor: 513.53, variacao12m: 1.35,
       fonte: "Nasdaq"
     },
 
     /* ===== COMMODITIES =================================================== */
     {
-      id: "brent", grupo: "commodities", exemplo: true,
+      id: "brent", grupo: "commodities",
       nome: "Petróleo Brent", ticker: "BRENT", formato: "usd", sufixo: "/barril",
       descricao: "Referência mundial do petróleo. Pesa na Petrobras e no preço da gasolina.",
-      valor: 71.40, variacao12m: -6.20,
+      valor: 88.1, variacao12m: 29.33,
       fonte: "ICE"
     },
     {
-      id: "ouro", grupo: "commodities", exemplo: true,
+      id: "ouro", grupo: "commodities",
       nome: "Ouro", ticker: "XAU", formato: "usd", sufixo: "/onça",
       descricao: "Reserva de valor clássica. Sobe quando o mercado busca proteção.",
-      valor: 2684.0, variacao12m: 19.4,
+      valor: 4529.9, variacao12m: 30.41,
       fonte: "LBMA"
     },
     {
-      id: "minerio", grupo: "commodities", exemplo: true,
+      id: "minerio", grupo: "commodities",
       nome: "Minério de ferro", ticker: "IRON", formato: "usd", sufixo: "/ton",
       descricao: "Principal commodity da Vale. Depende muito da demanda chinesa.",
-      valor: 102.30, variacao12m: -8.10,
+      valor: 161.91, variacao12m: 59.03,
       fonte: "SGX / Dalian"
     }
   ],
