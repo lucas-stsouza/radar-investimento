@@ -307,10 +307,23 @@ sob demanda pelo botão *Run workflow* na aba Actions. Ele valida o JavaScript c
 cria a invalidação `/*` no CloudFront, espera ela terminar e confere que a raiz
 responde HTTP 200.
 
-Os `aws s3 sync` **não usam `--delete`**: o histórico já publicado permanece
-intacto, só os arquivos da semana são sobrescritos. CSS e JS vão com
-`max-age=3600`; os HTML vão com `no-cache`, para o navegador sempre revalidar a
-edição da semana.
+O `aws s3 sync` **não usa `--delete`**: o histórico já publicado permanece
+intacto, só os arquivos da semana são sobrescritos.
+
+**Tudo sobe com `no-cache`, de propósito.** O site não versiona os arquivos — é
+sempre `js/dados.js`, nunca `js/dados.abc123.js`. Com qualquer `max-age`, o
+navegador busca o HTML novo (que revalida) e o combina com o `dados.js` velho
+que ainda está no cache dele: o leitor vê a edição da semana passada, e a
+invalidação do CloudFront não resolve, porque ela limpa o CDN e não o navegador
+de quem já visitou.
+
+`no-cache` não desliga o cache: o navegador guarda o arquivo e recebe `304` sem
+corpo quando nada mudou. O custo é uma revalidação por arquivo a cada visita —
+barato perto de publicar a edição errada.
+
+> Isso aconteceu de verdade em 30/08/2026: a primeira edição foi publicada, o
+> CloudFront já servia os dados novos, e o navegador continuava montando a
+> edição anterior por causa do `max-age=3600` no `dados.js`.
 
 #### Configuração inicial na AWS (uma vez só)
 
@@ -418,11 +431,7 @@ Create invalidation → `/*`.
 Com o AWS CLI configurado:
 
 ```bash
-aws s3 sync site/ s3://investimento.bloglm.com.br/ --exclude "*.html" --cache-control "public, max-age=3600" --region us-east-2
-```
-
-```bash
-aws s3 sync site/ s3://investimento.bloglm.com.br/ --exclude "*" --include "*.html" --cache-control "no-cache" --region us-east-2
+aws s3 sync site/ s3://investimento.bloglm.com.br/ --cache-control "no-cache" --region us-east-2
 ```
 
 ```bash
@@ -487,14 +496,13 @@ Ordem importa — o secret do GitHub depende da role existir.
 
 - [x] **`.github/workflows/deploy.yml` escrito** — 8 passos: valida o JS, confere
       que o `site/` está completo, autentica por OIDC, sobe CSS/JS com
-      `max-age=3600`, sobe os HTML com `no-cache`, invalida o CloudFront, espera
+      `no-cache`, invalida o CloudFront, espera
       a invalidação e confere que a raiz responde 200.
 - [x] **AWS**: Identity Provider, Role `github-actions-radar-deploy` e policy
       `publicar-radar` criados.
 - [x] **GitHub**: secret `AWS_ROLE_ARN` cadastrado.
 - [x] **Testado e no ar em 30/08/2026.** Primeira publicação automática
-      confirmada pelos cabeçalhos: `public, max-age=3600` no CSS/JS e
-      `no-cache` nos HTML.
+      confirmada pelos cabeçalhos `no-cache` servidos pelo CloudFront.
 
 ### 2. Domínio próprio ✅ concluído em 30/08/2026
 

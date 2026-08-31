@@ -50,18 +50,17 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-2
 
+      # Tudo com no-cache, de propósito. O site não versiona os arquivos
+      # (é sempre js/dados.js, nunca js/dados.abc123.js), então qualquer
+      # max-age faz o navegador montar o HTML novo com o dados.js velho — e o
+      # leitor vê a edição da semana passada até aquele cache expirar.
+      # no-cache não impede o cache: o navegador guarda o arquivo e recebe 304
+      # sem corpo quando nada mudou. O custo é uma revalidação por arquivo;
+      # publicar a edição certa vale muito mais que isso.
       # Sem --delete: o histórico já publicado no bucket permanece intacto.
-      - name: Subir CSS e JS (cache de 1 hora)
+      - name: Subir o site
         run: |
           aws s3 sync site/ s3://$BUCKET/ \
-            --exclude "*.html" \
-            --cache-control "public, max-age=3600" \
-            --region $REGIAO
-
-      - name: Subir os HTML (sem cache)
-        run: |
-          aws s3 sync site/ s3://$BUCKET/ \
-            --exclude "*" --include "*.html" \
             --cache-control "no-cache" \
             --region $REGIAO
 
