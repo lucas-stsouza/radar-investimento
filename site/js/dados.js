@@ -37,39 +37,48 @@ const RADAR = {
 
   meta: {
     // Data/hora desta edição. Formato: AAAA-MM-DDTHH:MM
-    atualizadoEm: "2026-08-29T15:14",
+    atualizadoEm: "2026-08-30T23:29",
     // Quem fechou a edição (aparece no rodapé e no histórico)
     responsavel: "Equipe Radar"
   },
 
   /* Parágrafo de abertura: o "se você só ler uma coisa, leia isso". */
   resumo:
-    "Semana de realização no Brasil depois de três altas seguidas, com o mercado " +
-    "ajustando a expectativa para o início do corte de juros. Lá fora, as bolsas " +
-    "americanas seguem sustentadas pelo setor de tecnologia, enquanto o dólar " +
-    "perde força frente às moedas emergentes.",
+    "Fim de semana sem pregão: o retrato da bolsa segue o do fechamento de " +
+    "sexta, com o Ibovespa em 175.664,62 pontos e alta de 24,54% em doze meses. " +
+    "No pano de fundo, a Selic está em 14,00% ao ano, um ponto percentual abaixo " +
+    "de doze meses atrás, e o IPCA acumulado em 4,44%, também em queda no " +
+    "período. As três commodities acompanhadas fecham o ano em alta, com o " +
+    "minério de ferro subindo 57,91%. O contraste fica com as criptomoedas, que " +
+    "recuaram de novo neste fim de semana e seguem todas no vermelho em doze " +
+    "meses, do Bitcoin (-32,34%) ao Dogecoin (-63,69%).",
 
   /* 3 a 5 pontos curtos. Cada um vira um cartão em "Radar da semana". */
   destaques: [
     {
-      titulo: "Juros no Brasil",
-      texto: "Copom mantém o tom de cautela e o mercado passa a projetar o primeiro corte só no próximo trimestre.",
-      tom: "neutro"        // positivo | neutro | negativo
+      titulo: "Bolsa no topo do período",
+      texto: "Ibovespa em 175.664,62 pontos, alta de 24,54% em doze meses — o maior avanço entre os índices de bolsa acompanhados aqui.",
+      tom: "positivo"        // positivo | neutro | negativo
     },
     {
-      titulo: "Tecnologia puxa Wall Street",
-      texto: "Resultados acima do esperado em semicondutores sustentam Nasdaq e S&P 500 perto das máximas históricas.",
+      titulo: "Juros e inflação cedem juntos",
+      texto: "Selic a 14,00% ao ano, um ponto percentual abaixo de doze meses atrás, com o IPCA acumulado em 4,44% — recuo de 0,79 ponto no mesmo intervalo.",
       tom: "positivo"
     },
     {
-      titulo: "Fundos imobiliários",
-      texto: "IFIX perde fôlego com a curva de juros longa pressionada; o segmento de papel sofre mais que o de tijolo.",
+      titulo: "Criptomoedas no vermelho",
+      texto: "As sete criptomoedas acompanhadas caem em doze meses, de -32,34% no Bitcoin a -63,69% no Dogecoin, e todas recuaram de novo neste fim de semana.",
       tom: "negativo"
     },
     {
-      titulo: "Câmbio",
-      texto: "Dólar recua com fluxo estrangeiro positivo para a bolsa brasileira e commodities firmes.",
+      titulo: "Commodities sustentadas",
+      texto: "As três commodities do Radar fecham doze meses em alta: minério de ferro +57,91%, petróleo Brent +30,66% e ouro +25,91%.",
       tom: "positivo"
+    },
+    {
+      titulo: "Câmbio mais fraco",
+      texto: "Dólar a R$ 5,1850, recuo de 4,16% em doze meses. O euro, a R$ 6,0201, cede 5,06% no mesmo período.",
+      tom: "neutro"
     }
   ],
 
@@ -97,34 +106,34 @@ const RADAR = {
      ------------------------------------------------------------------------ */
   agenda: [
     {
-      data: "2026-08-27", hora: "09:00", pais: "BR", relevancia: "alta",
-      evento: "IPCA-15 de agosto", fonte: "IBGE",
-      link: "https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9260-indice-nacional-de-precos-ao-consumidor-amplo-15.html"
-    },
-    {
-      data: "2026-08-27", hora: "09:30", pais: "EUA", relevancia: "media",
-      evento: "Pedidos de auxílio-desemprego", fonte: "US Dept. of Labor",
-      link: "https://oui.doleta.gov/unemploy/claims.asp"
-    },
-    {
-      data: "2026-08-28", hora: "08:00", pais: "BR", relevancia: "media",
-      evento: "IGP-M de agosto", fonte: "FGV IBRE",
-      link: "https://portalibre.fgv.br/igp"
-    },
-    {
-      data: "2026-08-28", hora: "09:30", pais: "EUA", relevancia: "alta",
-      evento: "PCE — inflação preferida do Fed", fonte: "BEA",
-      link: "https://www.bea.gov/data/personal-consumption-expenditures-price-index"
-    },
-    {
-      data: "2026-09-01", hora: "09:00", pais: "BR", relevancia: "alta",
+      data: "2026-09-01", pais: "BR", relevancia: "alta",
       evento: "PIB do 2º trimestre", fonte: "IBGE",
       link: "https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais/9300-contas-nacionais-trimestrais.html"
     },
     {
-      data: "2026-09-02", hora: "10:00", pais: "GLB", relevancia: "media",
-      evento: "PMI industrial global", fonte: "S&P Global",
-      link: "https://www.pmi.spglobal.com/"
+      data: "2026-09-02", pais: "BR", relevancia: "media",
+      evento: "Produção industrial de julho", fonte: "IBGE",
+      link: "https://www.ibge.gov.br/estatisticas/economicas/industria/9294-pesquisa-industrial-mensal-producao-fisica-brasil.html"
+    },
+    {
+      data: "2026-09-10", pais: "BR", relevancia: "media",
+      evento: "Pesquisa Mensal de Serviços", fonte: "IBGE",
+      link: "https://www.ibge.gov.br/estatisticas/economicas/servicos/9229-pesquisa-mensal-de-servicos.html"
+    },
+    {
+      data: "2026-09-11", pais: "BR", relevancia: "alta",
+      evento: "IPCA de agosto", fonte: "IBGE",
+      link: "https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html"
+    },
+    {
+      data: "2026-09-16", pais: "EUA", relevancia: "alta",
+      evento: "Decisão de juros do FOMC", fonte: "Federal Reserve",
+      link: "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+    },
+    {
+      data: "2026-09-25", pais: "BR", relevancia: "alta",
+      evento: "IPCA-15 de setembro", fonte: "IBGE",
+      link: "https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9260-indice-nacional-de-precos-ao-consumidor-amplo-15.html"
     }
   ],
 
@@ -240,7 +249,7 @@ const RADAR = {
       id: "eurbrl", grupo: "cambio",
       nome: "Euro", ticker: "EUR/BRL", formato: "brl", casas: 4,
       descricao: "Cotação do euro em reais.",
-      valor: 6.0056, variacao12m: -4.69,
+      valor: 6.0201, variacao12m: -5.06,
       fonte: "AwesomeAPI", aoVivo: "moeda-EUR"
     },
 
@@ -252,49 +261,49 @@ const RADAR = {
       id: "btcbrl", grupo: "cripto", destaque: false,
       nome: "Bitcoin", ticker: "BTC/BRL", formato: "brl",
       descricao: "A maior e mais líquida das criptomoedas. Serve de termômetro do apetite a risco.",
-      valor: 406967, variacao12m: -32.72,
+      valor: 406483, variacao12m: -32.34,
       fonte: "AwesomeAPI", aoVivo: "moeda-BTC"
     },
     {
       id: "ethbrl", grupo: "cripto",
       nome: "Ethereum", ticker: "ETH/BRL", formato: "brl",
       descricao: "Segunda maior cripto. É a rede onde roda a maior parte dos contratos inteligentes.",
-      valor: 12761.3, variacao12m: -45.66,
+      valor: 12623.8, variacao12m: -45.81,
       fonte: "AwesomeAPI", aoVivo: "moeda-ETH"
     },
     {
       id: "bnbbrl", grupo: "cripto",
       nome: "BNB", ticker: "BNB/BRL", formato: "brl",
       descricao: "Moeda do ecossistema da Binance, a maior corretora de cripto do mundo.",
-      valor: 3601, variacao12m: -21.87,
+      valor: 3571, variacao12m: -23.92,
       fonte: "AwesomeAPI", aoVivo: "moeda-BNB"
     },
     {
       id: "solbrl", grupo: "cripto",
       nome: "Solana", ticker: "SOL/BRL", formato: "brl",
       descricao: "Rede concorrente do Ethereum, conhecida por transações rápidas e baratas.",
-      valor: 546.7, variacao12m: -50.54,
+      valor: 533.1, variacao12m: -51.16,
       fonte: "AwesomeAPI", aoVivo: "moeda-SOL"
     },
     {
       id: "xrpbrl", grupo: "cripto",
       nome: "XRP", ticker: "XRP/BRL", formato: "brl",
       descricao: "Criada para transferências internacionais entre instituições financeiras.",
-      valor: 7.25, variacao12m: -52.49,
+      valor: 7.02, variacao12m: -54.15,
       fonte: "AwesomeAPI", aoVivo: "moeda-XRP"
     },
     {
       id: "dogebrl", grupo: "cripto",
       nome: "Dogecoin", ticker: "DOGE/BRL", formato: "brl", casas: 4,
       descricao: "Nasceu como piada e virou a principal “meme coin”. Muito sensível a notícias.",
-      valor: 0.4433, variacao12m: -61.8,
+      valor: 0.4273, variacao12m: -63.69,
       fonte: "AwesomeAPI", aoVivo: "moeda-DOGE"
     },
     {
       id: "ltcbrl", grupo: "cripto",
       nome: "Litecoin", ticker: "LTC/BRL", formato: "brl",
       descricao: "Uma das criptos mais antigas, criada como versão mais leve do Bitcoin.",
-      valor: 253.9, variacao12m: -58.14,
+      valor: 251.3, variacao12m: -58.89,
       fonte: "AwesomeAPI", aoVivo: "moeda-LTC"
     },
 
@@ -302,8 +311,7 @@ const RADAR = {
     {
       id: "plag11", grupo: "br-fiis",
       nome: "PLAG11", ticker: "PLAG11", formato: "brl",
-      descricao: "Fundo listado na B3.",
-      nota: "Confira o segmento do fundo e complete esta descrição.",
+      descricao: "FII de tijolo: carteira de imóveis físicos, vive da renda dos aluguéis.",
       valor: 62, variacao12m: 25.25, dy: 10.16,
       fonte: "B3"
     },
@@ -359,8 +367,7 @@ const RADAR = {
     {
       id: "gare11", grupo: "br-fiis",
       nome: "GARE11", ticker: "GARE11", formato: "brl",
-      descricao: "FII de renda urbana: imóveis alugados no varejo e na logística.",
-      nota: "Confira o segmento do fundo e complete esta descrição.",
+      descricao: "FII de tijolo: renda urbana, com imóveis alugados no varejo e na logística.",
       valor: 8.43, variacao12m: -6.33, dy: 10.83,
       fonte: "B3"
     },
@@ -556,21 +563,21 @@ const RADAR = {
       id: "brent", grupo: "commodities",
       nome: "Petróleo Brent", ticker: "BRENT", formato: "usd", sufixo: "/barril",
       descricao: "Referência mundial do petróleo. Pesa na Petrobras e no preço da gasolina.",
-      valor: 88.1, variacao12m: 29.33,
+      valor: 90.34, variacao12m: 30.66,
       fonte: "ICE"
     },
     {
       id: "ouro", grupo: "commodities",
       nome: "Ouro", ticker: "XAU", formato: "usd", sufixo: "/onça",
       descricao: "Reserva de valor clássica. Sobe quando o mercado busca proteção.",
-      valor: 4529.9, variacao12m: 30.41,
+      valor: 4469, variacao12m: 25.91,
       fonte: "LBMA"
     },
     {
       id: "minerio", grupo: "commodities",
       nome: "Minério de ferro", ticker: "IRON", formato: "usd", sufixo: "/ton",
       descricao: "Principal commodity da Vale. Depende muito da demanda chinesa.",
-      valor: 161.91, variacao12m: 59.03,
+      valor: 161.91, variacao12m: 57.91,
       fonte: "SGX / Dalian"
     }
   ],

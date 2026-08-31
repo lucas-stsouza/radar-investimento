@@ -419,7 +419,12 @@ html[data-tema="escuro"] .btn-icone__lua { display: none; }
 }
 .grafico__area  { stroke: none; opacity: .16; }
 
-.card__base { display: flex; align-items: flex-start; gap: 8px; }
+/* O ? precisa cair sempre no mesmo ponto, em todos os 55 cards.
+   margin-top:auto prega a linha no rodapé do card, mesmo quando o
+   mini-gráfico quebra de linha acima. align-items:flex-end ancora o ?
+   na base do bloco de chips — que varia de 28px (1 chip) a 60px (12M+DY,
+   em duas linhas). Centralizar aqui faria o ? flutuar junto com a altura. */
+.card__base { display: flex; align-items: flex-end; gap: 8px; margin-top: auto; }
 
 .metricas { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; min-width: 0; }
 

@@ -34,10 +34,9 @@
 
   function casasDe(ativo) {
     if (typeof ativo.casas === "number") return ativo.casas;
-    var abs = Math.abs(ativo.valor);
-    if (ativo.formato === "percentual") return 2;
-    if (ativo.formato === "pontos") return abs >= 1000 ? 0 : 2;
-    return abs >= 10000 ? 0 : 2;                     // brl e usd
+    return 2;      // sempre 2 casas: esconder decimal de um índice é falsear
+                   // o número. Quem precisa de mais declara `casas` no
+                   // dados.js — o câmbio usa 4.
   }
 
   function formatarValor(ativo) {
@@ -368,7 +367,10 @@
 
       var miolo =
         '<span class="agenda__data">' + p[2] + "/" + p[1] +
-          "<span>" + dias[d.getDay()] + " · " + escapar(item.hora) + "</span></span>" +
+          "<span>" + dias[d.getDay()] +
+          // hora é opcional: só entra quando o horário foi confirmado na fonte.
+          // Sem isso a linha mostrava "ter · undefined".
+          (item.hora ? " · " + escapar(item.hora) : "") + "</span></span>" +
         '<span class="agenda__pais">' + escapar(item.pais) + "</span>" +
         '<span class="agenda__evento">' + escapar(item.evento) +
           (item.fonte ? '<span class="agenda__fonte">' + escapar(item.fonte) +
