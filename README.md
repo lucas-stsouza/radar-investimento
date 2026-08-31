@@ -4,7 +4,7 @@ Site estático com o panorama semanal do mercado financeiro nacional e
 internacional. Feito para quem entra uma vez por semana e quer bater o olho: a
 estrutura nunca muda de lugar, só os números.
 
-No ar em <https://d2ozvuv8754sun.cloudfront.net> · repositório
+No ar em <https://investimento.bloglm.com.br> · repositório
 <https://github.com/lucas-stsouza/radar-investimento> (público, branch `main`).
 
 Sem build, sem dependências, sem npm. As ferramentas rodam com o Node que você
@@ -293,7 +293,8 @@ Melhor uma agenda curta e certa do que longa e chutada.
 | Domínio CloudFront | `d2ozvuv8754sun.cloudfront.net` |
 | Default root object | `index.html` |
 | Block public access | ligado — bucket privado, só o CloudFront lê (OAC) |
-| Domínio final pretendido | `investimento.bloglm.com.br` — pendente |
+| Domínio próprio | `investimento.bloglm.com.br` — ✅ no ar |
+| Certificado ACM | `us-east-1`, `3cdcdbad-61a3-42b5-bef3-cf9772026b7c`, renovação automática |
 
 O que sobe é o **conteúdo de `site/`, na raiz do bucket**, mantendo a
 hierarquia. Nada mais.
@@ -476,7 +477,7 @@ sumir, mas expõe os arquivos a qualquer um.
 
 Atualizado em **30/08/2026**.
 
-✅ Site no ar em <https://d2ozvuv8754sun.cloudfront.net>, carregando completo,
+✅ Site no ar em <https://investimento.bloglm.com.br>, carregando completo,
 com os selos "ao vivo" de câmbio, cripto e juros atualizando. Bucket criado e
 populado, bucket policy com OAC correta, `Default root object` resolvido.
 
@@ -495,16 +496,28 @@ Ordem importa — o secret do GitHub depende da role existir.
       confirmada pelos cabeçalhos: `public, max-age=3600` no CSS/JS e
       `no-cache` nos HTML.
 
-### 2. Domínio próprio
+### 2. Domínio próprio ✅ concluído em 30/08/2026
 
-Lucas assumiu esta parte. Ordem obrigatória:
+- [x] Certificado no ACM **em `us-east-1`**, validado por DNS. O CloudFront só
+      aceita certificado da Virgínia do Norte, mesmo com o bucket em Ohio —
+      emitir em `us-east-2` gera um certificado válido que simplesmente não
+      aparece na lista da distribuição.
+- [x] Registro de validação criado pelo botão **Criar registros no Route 53**,
+      já que a zona `bloglm.com.br` está no Route 53 da mesma conta.
+- [x] Alternate domain name + Custom SSL certificate na distribuição.
+- [x] Registro **A com Alias** em `investimento` apontando para
+      `d2ozvuv8754sun.cloudfront.net`.
 
-- [ ] Certificado no ACM **em `us-east-1`** para `investimento.bloglm.com.br`,
-      validado por DNS. (O CloudFront só aceita certificado da Virgínia do
-      Norte, mesmo com o bucket em Ohio.) Sem este passo, o próximo falha.
-- [ ] Alternate domain name (CNAME) na distribuição, em General → Settings → Edit.
-- [ ] Custom SSL certificate, na mesma tela, apontando para o certificado.
-- [ ] CNAME no DNS do `bloglm.com.br`: `investimento` → `d2ozvuv8754sun.cloudfront.net`.
+> **A com Alias, não CNAME.** Com a zona no Route 53, o Alias é gratuito
+> (CNAME é cobrado por consulta), resolve mais rápido e é a prática recomendada
+> da AWS para apontar para CloudFront.
+
+> **Default root object.** Ao editar as Settings da distribuição para adicionar
+> o domínio, confira que o campo continua `index.html`. Esvaziá-lo reintroduz o
+> `AccessDenied` na raiz descrito no diagnóstico acima.
+
+O certificado do ACM renova sozinho enquanto o registro de validação continuar
+na zona. Não apague o CNAME `_cae61d...` do Route 53.
 
 ### 3. Nome do arquivo de histórico por período
 
