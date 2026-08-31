@@ -39,7 +39,7 @@ const RADAR = {
     // Data/hora desta edição. Formato: AAAA-MM-DDTHH:MM
     atualizadoEm: "2026-08-30T23:29",
     // Quem fechou a edição (aparece no rodapé e no histórico)
-    responsavel: "Equipe Radar"
+    responsavel: "Lucas Santos"
   },
 
   /* Parágrafo de abertura: o "se você só ler uma coisa, leia isso". */
@@ -259,7 +259,7 @@ const RADAR = {
        formato de "aoVivo": "moeda-XXX".                                    */
     {
       id: "btcbrl", grupo: "cripto", destaque: false,
-      nome: "Bitcoin", ticker: "BTC/BRL", formato: "brl",
+      nome: "Bitcoin", ticker: "BTC/BRL", formato: "brl", casas: 0,
       descricao: "A maior e mais líquida das criptomoedas. Serve de termômetro do apetite a risco.",
       valor: 406483, variacao12m: -32.34,
       fonte: "AwesomeAPI", aoVivo: "moeda-BTC"
@@ -568,7 +568,7 @@ const RADAR = {
     },
     {
       id: "ouro", grupo: "commodities",
-      nome: "Ouro", ticker: "XAU", formato: "usd", sufixo: "/onça",
+      nome: "Ouro", ticker: "XAU", formato: "usd", sufixo: "/onça", casas: 0,
       descricao: "Reserva de valor clássica. Sobe quando o mercado busca proteção.",
       valor: 4469, variacao12m: 25.91,
       fonte: "LBMA"
