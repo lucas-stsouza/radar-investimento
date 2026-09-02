@@ -558,6 +558,55 @@ na zona. Não apague o CNAME `_cae61d...` do Route 53.
 
 ---
 
+## Medição de audiência
+
+O site carrega o Google Analytics 4 com a tag **`G-11J3Y8Y9GD`** — a **mesma**
+do `bloglm.com.br`, de propósito.
+
+Subdomínio do mesmo domínio é o caso simples do GA4: o cookie fica no domínio
+raiz, então `bloglm.com.br` e `investimento.bloglm.com.br` compartilham a
+sessão. Quem vai de um para o outro conta como **uma visita**, não duas. Não
+precisa de configuração de domínios cruzados — aquilo é só para domínios
+diferentes. Para separar nos relatórios, use a dimensão **Nome do host**.
+
+Criar um stream próprio para o subdomínio faria o contrário: fragmentaria a
+sessão e a mesma pessoa apareceria como dois usuários. Não faça.
+
+### O bloco sai dos snapshots
+
+A tag fica entre marcadores no `index.html` e no `historico.html`:
+
+```html
+<!-- analytics:inicio -->
+  ...
+<!-- analytics:fim -->
+```
+
+O `arquivar.mjs` **remove esse bloco** ao gerar cada snapshot, e logo depois
+confere que não sobrou vestígio nenhum — inclusive de uma tag que alguém tenha
+colado sem os marcadores; nesse caso ele aborta e explica. É o que mantém a
+promessa de que uma edição congelada abre daqui a anos, offline, sem chamar
+ninguém. Ao arquivar, ele imprime `analytics removido` para deixar isso visível.
+
+Se um dia mudar a tag, mexa só no `index.html` e no `historico.html`, dentro
+dos marcadores.
+
+### LGPD
+
+Não há banner nem aviso de cookies **neste subdomínio**, por decisão do
+responsável: a Política de Privacidade, a Política de cookies e os Termos de uso
+ficam no domínio principal, em `bloglm.com.br`.
+
+Vale saber o porquê de isso ser defensável: a LGPD não tem regra própria de
+cookies (o banner europeu vem da ePrivacy, que não se aplica aqui), então o que
+ela exige é base legal e transparência — não consentimento prévio obrigatório.
+O guia de cookies da ANPD de 2022 *recomenda* consentimento para cookies não
+essenciais, e analytics entra nessa categoria; é a leitura conservadora, e quem
+quiser adotá-la precisa de um banner. Isto é orientação geral, não parecer
+jurídico.
+
+---
+
 ## Aviso
 
 Conteúdo informativo e educacional. Não é recomendação de compra ou venda de

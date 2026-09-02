@@ -60,6 +60,26 @@ const fonteHist = ler("js", "historico.js");
 const HIST = new Function(fonteHist + "; return RADAR_HISTORICO;")();
 
 let html = ler("index.html");
+
+/* O snapshot nao pode chamar a rede: e essa a promessa de que ele abre igual
+   daqui a anos, offline. Entao o bloco de analytics da pagina ao vivo sai
+   aqui, e logo abaixo conferimos que nao sobrou nenhum vestigio — inclusive
+   de uma tag que alguem tenha colado sem os marcadores. */
+const analytics = /[ 	]*<!-- analytics:inicio[\s\S]*?analytics:fim -->\n?/g;
+const tinhaAnalytics = analytics.test(html);
+analytics.lastIndex = 0;
+html = html.replace(analytics, "");
+
+const vestigios = [...html.matchAll(/googletagmanager|gtag\s*\(|google-analytics|G-[A-Z0-9]{8,}/g)]
+  .map((m) => m[0]);
+if (vestigios.length) {
+  console.error(
+    "Erro: sobrou analytics no snapshot:", [...new Set(vestigios)],
+    "\nEnvolva a tag com <!-- analytics:inicio --> e <!-- analytics:fim -->."
+  );
+  process.exit(1);
+}
+
 const css = ler("css", "style.css");
 const app = ler("js", "app.js");
 
@@ -202,4 +222,5 @@ console.log(`Edicao de ${dataBonita} arquivada.`);
 console.log(`  historico/${dia}.html   ${kb} KB, autocontido`);
 console.log(`  js/historico.js         ${HIST.length + 1} edicoes registradas`);
 console.log(`  ${RADAR.ativos.length} ativos congelados`);
+if (tinhaAnalytics) console.log("  analytics removido: o snapshot nao chama a rede");
 console.log("\nAgora atualize js/dados.js com os numeros da nova semana.");
