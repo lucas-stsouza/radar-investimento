@@ -166,14 +166,38 @@ async function doYahoo(ticker, querDy) {
     encodeURIComponent(ticker) + "?range=1y&interval=1d&events=div";
   const j = await pegarJson(url);
   const res = j?.chart?.result?.[0];
-  if (!res?.meta?.regularMarketPrice) throw new Error("resposta sem preço");
-
-  const preco = res.meta.regularMarketPrice;
   const ts = res.timestamp || [];
   const fech = res.indicators?.quote?.[0]?.close || [];
   const pontos = ts
     .map((t, i) => ({ t, v: fech[i] }))
     .filter((p) => p.v != null && isFinite(p.v));
+
+  /* O regularMarketPrice do Yahoo pode congelar sem avisar. No TIO=F (minério
+     de ferro) ele devolvia 161,91 — preço de agosto de 2021 — como se fosse de
+     hoje, enquanto a série diária seguia correta na casa dos 99. O site
+     publicou esse número por três edições antes de alguém reparar.
+
+     Então o preço só é aceito se o carimbo dele for recente. Cinco dias cobrem
+     fim de semana e feriado. Se estiver velho, caímos no último fechamento da
+     série, que é dado real. Se nem a série estiver recente, o ativo não é
+     confirmado — mantém o valor anterior e aparece no relatório. */
+  const AGORA = Math.floor(Date.now() / 1000);
+  const LIMITE = 5 * 86400;
+  const carimbo = res.meta?.regularMarketTime;
+  const ultimo = pontos.length ? pontos[pontos.length - 1] : null;
+
+  let preco, aviso = null;
+  if (res.meta?.regularMarketPrice && carimbo && AGORA - carimbo <= LIMITE) {
+    preco = res.meta.regularMarketPrice;
+  } else if (ultimo && AGORA - ultimo.t <= LIMITE) {
+    preco = ultimo.v;
+    const quando = carimbo
+      ? new Date(carimbo * 1000).toLocaleDateString("pt-BR")
+      : "sem data";
+    aviso = "preco do Yahoo parado em " + quando + "; usei o ultimo fechamento";
+  } else {
+    throw new Error("cotacao desatualizada na fonte");
+  }
 
   // Alguns índices da B3 (IFIX, SMLL, IDIV) têm cotação no Yahoo mas não têm
   // série histórica. Nesse caso gravamos o valor real e deixamos a variação
@@ -181,7 +205,10 @@ async function doYahoo(ticker, querDy) {
   const saida = {
     valor: preco,
     variacao12m: pontos.length >= 2 ? variacao(preco, valorHaUmAno(pontos), false) : null,
-    parcial: pontos.length < 2 ? "sem serie historica: variacao de 12m nao calculada" : null,
+    parcial: [
+      aviso,
+      pontos.length < 2 ? "sem serie historica: variacao de 12m nao calculada" : null
+    ].filter(Boolean).join(" | ") || null,
     fonte: "Yahoo Finance · " + ticker,
     nome: res.meta.longName || res.meta.shortName || ticker
   };
