@@ -1,0 +1,3009 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="escuro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radar de Investimentos · edição de 06/09/2026</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="../index.html">
+<meta name="description" content="Panorama semanal do mercado financeiro nacional e internacional: Ibovespa, IFIX, Selic, IPCA, fundos imobiliários, ações, criptomoedas, S&P 500, Nasdaq, dólar e commodities.">
+<meta name="theme-color" content="#0b0f17">
+<style>
+/* ==========================================================================
+   RADAR DE INVESTIMENTOS — ESTILOS
+   1. Tokens e tema      5. Cards de ativo
+   2. Base               6. Agenda e glossário
+   3. Cabeçalho e nav    7. Rodapé e utilitários
+   4. Seções             8. Responsivo
+   ========================================================================== */
+
+/* ============ 1. TOKENS E TEMA ============ */
+:root {
+  /* Tema escuro (padrão) */
+  --fundo:        #0b0f17;
+  --fundo-alt:    #0e1421;
+  --superficie:   #141c2b;
+  --superficie-2: #1a2334;
+  --borda:        #243147;
+  --borda-forte:  #33425e;
+
+  --texto:        #e8edf6;
+  --texto-medio:  #9dabc4;
+  --texto-fraco:  #6b7a94;
+
+  --alta:         #34d399;
+  --alta-fundo:   rgba(52, 211, 153, .12);
+  --baixa:        #f87171;
+  --baixa-fundo:  rgba(248, 113, 113, .12);
+  --neutro:       #94a3b8;
+
+  --destaque:     #60a5fa;
+  --destaque-2:   #a78bfa;
+  --alerta:       #fbbf24;
+  --alerta-fundo: rgba(251, 191, 36, .12);
+
+  --raio:      14px;
+  --raio-sm:   9px;
+  --sombra:    0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  --largura:   1200px;
+  --topo-alt:  132px;
+
+  --fonte: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+           "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono",
+          Consolas, "Liberation Mono", monospace;
+}
+
+html[data-tema="claro"] {
+  --fundo:        #f5f7fb;
+  --fundo-alt:    #eaeff7;
+  --superficie:   #ffffff;
+  --superficie-2: #f2f5fa;
+  --borda:        #dde3ee;
+  --borda-forte:  #c3ccdc;
+
+  --texto:        #101725;
+  --texto-medio:  #4f5c73;
+  --texto-fraco:  #7c8798;
+
+  --alta:         #0f9d63;
+  --alta-fundo:   rgba(15, 157, 99, .10);
+  --baixa:        #d92d20;
+  --baixa-fundo:  rgba(217, 45, 32, .10);
+  --neutro:       #64748b;
+
+  --destaque:     #1d4ed8;
+  --destaque-2:   #6d28d9;
+  --alerta:       #b45309;
+  --alerta-fundo: rgba(180, 83, 9, .10);
+
+  --sombra: 0 1px 2px rgba(16,23,37,.05), 0 8px 22px -14px rgba(16,23,37,.28);
+}
+
+/* ============ 2. BASE ============ */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* `hidden` precisa vencer display:grid/flex das grades e cards */
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--topo-alt) + 16px); }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .25s ease, color .25s ease;
+}
+
+h1, h2, h3 { margin: 0; line-height: 1.2; letter-spacing: -.02em; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+a { color: inherit; text-decoration: none; }
+code {
+  font-family: var(--mono); font-size: .88em;
+  background: var(--superficie-2); border: 1px solid var(--borda);
+  padding: .1em .4em; border-radius: 5px;
+}
+
+.container { width: 100%; max-width: var(--largura); margin: 0 auto; padding: 0 24px; }
+
+.pular {
+  position: absolute; left: -9999px; top: 0; z-index: 999;
+  background: var(--destaque); color: #fff; padding: 10px 16px; border-radius: 0 0 8px 0;
+}
+.pular:focus { left: 0; }
+
+:focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; border-radius: 4px; }
+
+/* ============ 3. CABEÇALHO E NAVEGAÇÃO ============ */
+.topo {
+  position: sticky; top: 0; z-index: 100;
+  background: color-mix(in srgb, var(--fundo) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--borda);
+}
+
+.topo__linha {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; padding-top: 14px; padding-bottom: 14px;
+}
+
+.marca {
+  display: flex; align-items: center; gap: 12px; min-width: 0;
+  color: inherit; text-decoration: none;
+}
+.marca:hover .marca__nome { color: var(--alta); }
+.marca__nome { transition: color .18s; }
+.marca__fundo { fill: var(--superficie-2); }
+.marca__linha  { stroke: var(--alta); }
+.marca__ponto  { fill: var(--alta); }
+.marca__icone { display: flex; }
+
+.marca__nome {
+  font-size: 1.22rem; font-weight: 700;
+  white-space: nowrap;
+}
+.marca__sub {
+  font-size: .76rem; color: var(--texto-fraco);
+  letter-spacing: .04em; text-transform: uppercase; margin-top: 2px;
+}
+
+/* selo de conteúdo montado com auxílio de IA */
+.marca__linha1 { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.selo-ia {
+  display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;
+  padding: 3px 8px 3px 6px; border-radius: 999px;
+  font-size: .62rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #fff; cursor: help;
+  background: linear-gradient(135deg, #7c5cff 0%, #5b7cfa 100%);
+  border: 1px solid rgba(255, 255, 255, .22);
+  box-shadow: 0 1px 6px -1px rgba(124, 92, 255, .55);
+}
+.selo-ia svg { flex: none; opacity: .95; }
+
+/* botões da linha do tempo do histórico */
+.edicao-item__acoes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.edicao-item__acoes .edicao-item__btn { margin-top: 0; }
+.edicao-item__btn--pagina {
+  display: inline-block; color: var(--destaque);
+  border-color: color-mix(in srgb, var(--destaque) 40%, transparent);
+}
+.edicao-item__btn--pagina:hover { border-color: var(--destaque); }
+.edicao-item--ativa .edicao-item__btn--pagina { display: inline-block; }
+
+.topo__direita { display: flex; align-items: center; gap: 14px; }
+
+.atualizacao {
+  display: flex; flex-direction: column; align-items: flex-end;
+  padding: 6px 14px; border: 1px solid var(--borda); border-radius: var(--raio-sm);
+  background: var(--superficie); line-height: 1.25;
+}
+.atualizacao__rotulo {
+  font-size: .64rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--texto-fraco);
+}
+.atualizacao__valor {
+  font-family: var(--mono); font-size: .92rem; font-weight: 600;
+  font-variant-numeric: tabular-nums; color: var(--texto);
+}
+.atualizacao__relativo { font-size: .68rem; color: var(--texto-fraco); }
+
+.btn-icone {
+  width: 40px; height: 40px; flex: none;
+  display: grid; place-items: center; cursor: pointer;
+  background: var(--superficie); color: var(--texto-medio);
+  border: 1px solid var(--borda); border-radius: var(--raio-sm);
+  font-size: 1.05rem; transition: color .2s, border-color .2s, background .2s;
+}
+.btn-icone:hover { color: var(--texto); border-color: var(--borda-forte); }
+.btn-icone__sol { display: none; }
+html[data-tema="escuro"] .btn-icone__sol { display: block; }
+html[data-tema="escuro"] .btn-icone__lua { display: none; }
+
+/* --- barra de navegação --- */
+.navbar { border-top: 1px solid var(--borda); background: var(--fundo-alt); }
+.navbar__linha {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; min-height: 54px;
+}
+
+.navbar__links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.navbar__links::-webkit-scrollbar { display: none; }
+.navbar__links a {
+  display: block; padding: 8px 13px; border-radius: 8px; white-space: nowrap;
+  font-size: .875rem; font-weight: 500; color: var(--texto-medio);
+  transition: color .18s, background .18s;
+}
+.navbar__links a:hover { color: var(--texto); background: var(--superficie-2); }
+.navbar__links a.ativo { color: var(--texto); background: var(--superficie); box-shadow: inset 0 0 0 1px var(--borda); }
+
+.navbar__controles { display: flex; align-items: center; gap: 10px; }
+
+/* seletor de edição arquivada */
+.edicao {
+  display: flex; align-items: center; gap: 8px;
+  padding: 3px 3px 3px 11px;
+  background: var(--superficie-2); border: 1px solid var(--borda); border-radius: 10px;
+}
+.edicao__rotulo {
+  font-size: .68rem; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--texto-fraco); white-space: nowrap;
+}
+.edicao__select {
+  font: inherit; font-size: .82rem; font-weight: 600; font-variant-numeric: tabular-nums;
+  color: var(--texto); background: var(--superficie);
+  border: 1px solid var(--borda); border-radius: 7px;
+  padding: 5px 9px; cursor: pointer; max-width: 190px;
+}
+.edicao__select:hover { border-color: var(--borda-forte); }
+
+/* botão que leva para a página de histórico (ocupa o lugar da antiga busca) */
+.btn-historico {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  padding: 8px 14px; border-radius: 10px;
+  font-size: .85rem; font-weight: 600; color: var(--texto-medio);
+  background: var(--superficie-2); border: 1px solid var(--borda);
+  transition: color .18s, border-color .18s, background .18s;
+}
+.btn-historico:hover {
+  color: var(--texto); border-color: var(--borda-forte); background: var(--superficie);
+}
+.btn-historico svg { flex: none; }
+.btn-historico__qtd {
+  font-family: var(--mono); font-size: .68rem; font-weight: 700;
+  min-width: 18px; padding: 1px 5px; border-radius: 999px; text-align: center;
+  background: var(--alta-fundo); color: var(--alta);
+}
+.navbar__voltar { font-weight: 600; }
+
+/* ============ 4. SEÇÕES ============ */
+.aviso-exemplo {
+  background: var(--alerta-fundo);
+  border-bottom: 1px solid color-mix(in srgb, var(--alerta) 35%, transparent);
+  color: var(--texto);
+  font-size: .86rem; padding: 11px 0;
+}
+.aviso-exemplo strong { color: var(--alerta); }
+#listaExemplo { font-family: var(--mono); font-size: .82em; color: var(--texto-medio); }
+
+/* faixa de "você está vendo uma edição arquivada" */
+.faixa-edicao {
+  background: color-mix(in srgb, var(--destaque-2) 16%, var(--fundo));
+  border-bottom: 1px solid color-mix(in srgb, var(--destaque-2) 40%, transparent);
+  font-size: .88rem; padding: 11px 0;
+}
+.faixa-edicao__linha {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+}
+.faixa-edicao strong { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.faixa-edicao a {
+  font-size: .82rem; font-weight: 600; white-space: nowrap;
+  padding: 6px 13px; border-radius: 8px;
+  background: var(--superficie); color: var(--texto);
+  border: 1px solid var(--borda-forte);
+  transition: border-color .18s, transform .18s;
+}
+.faixa-edicao a:hover { border-color: var(--destaque-2); transform: translateY(-1px); }
+
+.secao { padding: 56px 0; }
+.secao + .secao { padding-top: 0; }
+.secao--abertura { padding-top: 44px; }
+
+.secao__cabecalho {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  padding-bottom: 16px; margin-bottom: 26px;
+  border-bottom: 1px solid var(--borda);
+}
+.secao__etiqueta {
+  font-size: .7rem; font-weight: 700; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--destaque); margin-bottom: 6px;
+}
+.secao__titulo { font-size: 1.85rem; font-weight: 700; }
+.secao__apoio { font-size: .9rem; color: var(--texto-medio); max-width: 46ch; }
+
+.grupo__titulo {
+  font-size: .78rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--texto-fraco);
+  margin: 30px 0 14px;
+}
+.grupo__titulo:first-of-type { margin-top: 0; }
+
+/* --- abertura / panorama --- */
+.abertura {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 44px; align-items: center;
+}
+.abertura__titulo { font-size: 2.6rem; font-weight: 800; margin-bottom: 14px; }
+.abertura__resumo {
+  font-size: 1.03rem; color: var(--texto-medio); max-width: 52ch;
+  line-height: 1.65;
+}
+
+.mercados { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.mercado {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 12px; border-radius: 999px;
+  background: var(--superficie); border: 1px solid var(--borda);
+  font-size: .78rem; color: var(--texto-medio);
+}
+.mercado__bolinha {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--texto-fraco);
+}
+.mercado--aberto .mercado__bolinha { background: var(--alta); box-shadow: 0 0 0 3px var(--alta-fundo); }
+.mercado--aberto { color: var(--texto); }
+.mercado strong { color: var(--texto); font-weight: 600; }
+
+.abertura__cards {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+}
+
+/* --- radar da semana --- */
+.destaques {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px;
+}
+.destaque-item {
+  position: relative; padding: 20px 20px 20px 24px;
+  background: var(--superficie); border: 1px solid var(--borda);
+  border-radius: var(--raio); overflow: hidden;
+}
+.destaque-item::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--neutro);
+}
+.destaque-item[data-tom="positivo"]::before { background: var(--alta); }
+.destaque-item[data-tom="negativo"]::before { background: var(--baixa); }
+.destaque-item[data-tom="neutro"]::before   { background: var(--alerta); }
+.destaque-item h3 { font-size: 1rem; font-weight: 650; margin-bottom: 7px; }
+.destaque-item p  { font-size: .89rem; color: var(--texto-medio); line-height: 1.55; }
+
+/* ============ 5. CARDS DE ATIVO ============ */
+.grade {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 14px;
+}
+
+.card {
+  position: relative; display: flex; flex-direction: column; gap: 12px;
+  padding: 16px 17px;
+  background: var(--superficie); border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.card:hover {
+  border-color: var(--borda-forte); transform: translateY(-2px); box-shadow: var(--sombra);
+}
+.card[hidden] { display: none; }
+
+.card--grande { padding: 20px; gap: 14px; }
+.card--grande .card__valor { font-size: 1.9rem; }
+
+.card__topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+/* sem isto, um nome comprido empurra o selo para fora do card */
+.card__topo > div { min-width: 0; }
+.card__nome {
+  font-size: .93rem; font-weight: 600; line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.card__ticker {
+  font-family: var(--mono); font-size: .66rem; font-weight: 600;
+  letter-spacing: .06em; color: var(--texto-fraco);
+  margin-top: 3px; text-transform: uppercase;
+}
+.card__selo {
+  flex: none; font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 7px; border-radius: 999px;
+  background: var(--alta-fundo); color: var(--alta);
+  border: 1px solid color-mix(in srgb, var(--alta) 30%, transparent);
+}
+.card__selo--estatico {
+  background: var(--superficie-2); color: var(--texto-fraco); border-color: var(--borda);
+}
+.card__selo--exemplo {
+  background: var(--alerta-fundo); color: var(--alerta);
+  border-color: color-mix(in srgb, var(--alerta) 35%, transparent);
+}
+
+.card__meio {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+
+.card__valor {
+  font-family: var(--mono); font-size: 1.5rem; font-weight: 700;
+  font-variant-numeric: tabular-nums; letter-spacing: -.02em; line-height: 1.1;
+}
+.card__prefixo, .card__sufixo {
+  font-size: .62em; font-weight: 600; color: var(--texto-fraco);
+}
+.card__sufixo { margin-left: 3px; }
+
+.grafico { flex: none; opacity: .9; max-width: 100%; }
+.grafico__linha {
+  fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;   /* não engorda quando o SVG é esticado */
+}
+.grafico__area  { stroke: none; opacity: .16; }
+
+/* O ? precisa cair sempre no mesmo ponto, em todos os 55 cards.
+   margin-top:auto prega a linha no rodapé do card, mesmo quando o
+   mini-gráfico quebra de linha acima. align-items:flex-end ancora o ?
+   na base do bloco de chips — que varia de 28px (1 chip) a 60px (12M+DY,
+   em duas linhas). Centralizar aqui faria o ? flutuar junto com a altura. */
+.card__base { display: flex; align-items: flex-end; gap: 8px; margin-top: auto; }
+
+.metricas { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; min-width: 0; }
+
+.metrica {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  font-family: var(--mono); font-size: .8rem; font-weight: 700;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  padding: 4px 8px; border-radius: 7px;
+}
+.metrica__rot {
+  font-family: var(--fonte); font-size: .6rem; font-weight: 700;
+  letter-spacing: .05em; text-transform: uppercase;
+  color: var(--texto-fraco); align-self: center;
+}
+.metrica__seta { font-size: .8em; }
+
+.metrica--alta   { color: var(--alta);   background: var(--alta-fundo); }
+.metrica--baixa  { color: var(--baixa);  background: var(--baixa-fundo); }
+.metrica--neutro { color: var(--neutro); background: var(--superficie-2); }
+.metrica--dy     { color: var(--destaque); background: color-mix(in srgb, var(--destaque) 12%, transparent); }
+.metrica--dy .metrica__rot { color: color-mix(in srgb, var(--destaque) 72%, var(--texto-fraco)); }
+.metrica--vazia {
+  font-family: var(--fonte); font-size: .72rem; font-weight: 500;
+  color: var(--texto-fraco); background: var(--superficie-2); cursor: help;
+  white-space: normal;
+}
+
+.card__ajuda {
+  width: 20px; height: 20px; flex: none; border: 0; cursor: help; padding: 0;
+  display: grid; place-items: center;
+  background: var(--superficie-2); color: var(--texto-fraco);
+  border-radius: 50%; font-size: .7rem; font-weight: 700;
+  transition: color .18s, background .18s;
+}
+.card__ajuda:hover, .card__ajuda:focus { color: var(--texto); background: var(--borda); }
+
+.card__explicacao {
+  font-size: .8rem; color: var(--texto-medio); line-height: 1.5;
+  padding-top: 11px; border-top: 1px dashed var(--borda);
+}
+.card__explicacao[hidden] { display: none; }
+.card__nota {
+  display: block; margin-top: 7px; padding-left: 9px;
+  border-left: 2px solid var(--alerta);
+  font-size: .78rem; color: var(--texto-medio);
+}
+.card__fonte {
+  display: block; margin-top: 7px;
+  font-size: .68rem; color: var(--texto-fraco);
+}
+
+/* ============ 6. AGENDA E GLOSSÁRIO ============ */
+.agenda {
+  border: 1px solid var(--borda); border-radius: var(--raio);
+  background: var(--superficie); overflow: hidden;
+}
+.agenda__item + .agenda__item { border-top: 1px solid var(--borda); }
+.agenda__item--passado { opacity: .45; }
+
+/* a linha inteira é o link para a fonte oficial */
+.agenda__linha {
+  display: grid; grid-template-columns: 96px 54px 1fr auto;
+  align-items: center; gap: 16px; padding: 14px 18px;
+  transition: background .18s;
+}
+a.agenda__linha:hover { background: var(--superficie-2); }
+a.agenda__linha:hover .agenda__evento { color: var(--destaque); }
+a.agenda__linha:hover .agenda__fonte { color: var(--destaque); }
+
+.agenda__data {
+  font-family: var(--mono); font-size: .82rem; font-weight: 600;
+  font-variant-numeric: tabular-nums; color: var(--texto-medio);
+}
+.agenda__data span { display: block; font-size: .66rem; color: var(--texto-fraco); text-transform: uppercase; }
+.agenda__fonte {
+  display: block; margin-top: 2px;
+  font-size: .68rem; font-weight: 600; color: var(--texto-fraco);
+  transition: color .18s;
+}
+
+/* lista de calendários completos, abaixo da agenda */
+.calendarios {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin-top: 14px;
+}
+.calendarios__rot {
+  font-size: .68rem; font-weight: 700; letter-spacing: .11em;
+  text-transform: uppercase; color: var(--texto-fraco); margin-right: 2px;
+}
+.calendarios a {
+  font-size: .78rem; font-weight: 500; color: var(--texto-medio);
+  padding: 5px 11px; border-radius: 999px;
+  background: var(--superficie); border: 1px solid var(--borda);
+  transition: color .18s, border-color .18s;
+}
+.calendarios a:hover { color: var(--destaque); border-color: var(--destaque); }
+
+.agenda__pais {
+  font-size: .64rem; font-weight: 700; letter-spacing: .07em; text-align: center;
+  padding: 3px 0; border-radius: 6px;
+  background: var(--superficie-2); color: var(--texto-medio); border: 1px solid var(--borda);
+}
+.agenda__evento { font-size: .93rem; font-weight: 500; transition: color .18s; }
+.agenda__rel {
+  font-size: .64rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px;
+}
+.agenda__rel--alta  { background: var(--baixa-fundo); color: var(--baixa); }
+.agenda__rel--media { background: var(--alerta-fundo); color: var(--alerta); }
+
+/* --- histórico de edições (linha do tempo) --- */
+.historico { position: relative; padding-left: 4px; }
+.historico::before {
+  content: ""; position: absolute; left: 8px; top: 10px; bottom: 10px;
+  width: 2px; background: var(--borda);
+}
+.edicao-item { position: relative; display: flex; gap: 18px; padding-bottom: 14px; }
+.edicao-item__marca {
+  position: relative; z-index: 1; flex: none;
+  width: 13px; height: 13px; margin-top: 17px; border-radius: 50%;
+  background: var(--superficie); border: 2px solid var(--borda-forte);
+}
+.edicao-item--ativa .edicao-item__marca {
+  background: var(--alta); border-color: var(--alta);
+  box-shadow: 0 0 0 4px var(--alta-fundo);
+}
+.edicao-item__corpo {
+  flex: 1; min-width: 0; padding: 15px 18px;
+  background: var(--superficie); border: 1px solid var(--borda); border-radius: var(--raio);
+  transition: border-color .2s;
+}
+.edicao-item--ativa .edicao-item__corpo { border-color: var(--borda-forte); }
+.edicao-item__topo {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;
+}
+.edicao-item__data {
+  font-family: var(--mono); font-size: .92rem; font-variant-numeric: tabular-nums;
+}
+.edicao-item__selo {
+  font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px;
+  background: var(--alta-fundo); color: var(--alta);
+  border: 1px solid color-mix(in srgb, var(--alta) 30%, transparent);
+}
+.edicao-item__meta { font-size: .72rem; color: var(--texto-fraco); margin-left: auto; }
+.edicao-item p { font-size: .86rem; color: var(--texto-medio); line-height: 1.55; }
+.edicao-item__btn {
+  margin-top: 12px; font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer;
+  padding: 6px 13px; border-radius: 8px;
+  background: var(--superficie-2); color: var(--texto-medio);
+  border: 1px solid var(--borda); transition: color .18s, border-color .18s;
+}
+.edicao-item__btn:hover { color: var(--texto); border-color: var(--borda-forte); }
+.edicao-item--ativa .edicao-item__btn { display: none; }
+
+.vazio {
+  padding: 26px 24px; border-radius: var(--raio);
+  background: var(--superficie); border: 1px dashed var(--borda-forte);
+  font-size: .89rem; color: var(--texto-medio); line-height: 1.6;
+  max-width: 74ch;
+}
+.vazio p + p { margin-top: 10px; }
+.vazio strong { color: var(--texto); }
+
+.glossario {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px;
+}
+.glossario details {
+  background: var(--superficie); border: 1px solid var(--borda);
+  border-radius: var(--raio-sm); overflow: hidden;
+}
+.glossario summary {
+  cursor: pointer; list-style: none; padding: 13px 16px;
+  font-size: .92rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.glossario summary::-webkit-details-marker { display: none; }
+.glossario summary::after {
+  content: "+"; color: var(--texto-fraco); font-weight: 400; font-size: 1.15rem;
+  transition: transform .2s;
+}
+.glossario details[open] summary::after { transform: rotate(45deg); }
+.glossario p {
+  padding: 0 16px 14px; font-size: .86rem; color: var(--texto-medio); line-height: 1.55;
+}
+
+/* ============ 7. RODAPÉ E UTILITÁRIOS ============ */
+.rodape {
+  margin-top: 60px; padding: 38px 0 46px;
+  background: var(--fundo-alt); border-top: 1px solid var(--borda);
+}
+.rodape__grade {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 28px;
+}
+.rodape__marca { font-weight: 700; margin-bottom: 6px; }
+.rodape__titulo {
+  font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--texto-fraco); margin-bottom: 6px;
+}
+.rodape__linha { font-size: .82rem; color: var(--texto-medio); line-height: 1.6; }
+.rodape__link { color: var(--destaque); font-weight: 600; }
+.rodape__link:hover { text-decoration: underline; }
+
+.ao-topo {
+  position: fixed; right: 22px; bottom: 22px; z-index: 90;
+  width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center;
+  background: var(--superficie); color: var(--texto-medio);
+  border: 1px solid var(--borda-forte); box-shadow: var(--sombra);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity .22s, transform .22s, visibility .22s, color .18s;
+}
+.ao-topo.visivel { opacity: 1; visibility: visible; transform: none; }
+.ao-topo:hover { color: var(--texto); }
+
+/* ============ 8. RESPONSIVO ============ */
+@media (max-width: 1000px) {
+  .abertura { grid-template-columns: 1fr; gap: 30px; }
+  .abertura__titulo { font-size: 2.2rem; }
+}
+
+@media (max-width: 760px) {
+  :root { --topo-alt: 158px; }
+  .container { padding: 0 16px; }
+
+  .topo__linha { flex-wrap: wrap; gap: 12px; padding-bottom: 12px; }
+  .marca__nome { font-size: 1.05rem; }
+  .marca__sub { display: none; }
+  .atualizacao { align-items: flex-start; padding: 5px 11px; }
+
+  .navbar__linha { flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 10px; }
+  .navbar__links { padding: 6px 0; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+  .navbar__controles { justify-content: space-between; padding-bottom: 4px; }
+  .btn-historico { padding: 7px 12px; }
+  .edicao { padding-left: 8px; }
+  .edicao__rotulo { display: none; }
+  .edicao__select { max-width: 140px; }
+
+  .edicao-item { gap: 12px; }
+  .edicao-item__corpo { padding: 13px 14px; }
+  .edicao-item__meta { margin-left: 0; width: 100%; }
+  .vazio { padding: 18px 16px; }
+
+  .secao { padding: 40px 0; }
+  .secao__titulo { font-size: 1.5rem; }
+  .abertura__titulo { font-size: 1.9rem; }
+  .abertura__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .card--grande .card__valor { font-size: 1.4rem; }
+
+  .grade { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .card { padding: 13px 14px; gap: 10px; }
+  .card__valor { font-size: 1.22rem; }
+  /* card estreito: o mini-gráfico não cabe ao lado do valor, então ocupa
+     a linha inteira logo abaixo dele */
+  .card .grafico { flex: 1 1 100%; width: 100%; height: 26px; }
+  .card__meio { gap: 6px; }
+
+  .agenda__linha { grid-template-columns: 74px 1fr; gap: 8px 12px; padding: 13px 14px; }
+  .agenda__pais { grid-row: 1; justify-self: start; padding: 3px 8px; }
+  .agenda__evento { grid-column: 1 / -1; }
+  .agenda__rel { grid-column: 1 / -1; justify-self: start; }
+  .calendarios__rot { width: 100%; }
+}
+
+@media (max-width: 359px) {
+  .abertura__cards, .grade { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+@media print {
+  .topo, .ao-topo, .navbar, .card__ajuda { display: none !important; }
+  body { background: #fff; color: #000; }
+  .card, .agenda, .destaque-item { break-inside: avoid; }
+}
+
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0f17'/><path d='M18 68 L38 46 L54 58 L82 28' fill='none' stroke='%2334d399' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+</head>
+<body data-pagina="arquivo">
+
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+<!-- ====================== CABEÇALHO FIXO ====================== -->
+<header class="topo" id="topo">
+  <div class="topo__linha container">
+
+    <a class="marca" href="../index.html">
+      <span class="marca__icone" aria-hidden="true">
+        <svg viewBox="0 0 100 100" width="34" height="34">
+          <rect width="100" height="100" rx="24" class="marca__fundo"/>
+          <path d="M18 68 L38 46 L54 58 L82 28" fill="none" class="marca__linha"
+                stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="82" cy="28" r="8" class="marca__ponto"/>
+        </svg>
+      </span>
+      <div class="marca__texto">
+        <div class="marca__linha1">
+          <h1 class="marca__nome">Radar de Investimentos</h1>
+          <span class="selo-ia" title="Edicao montada com auxilio de IA. Os numeros vem de APIs publicas (Yahoo Finance, Banco Central, AwesomeAPI), nao do modelo.">
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor" aria-hidden="true">
+              <path d="M12 2l2.2 6.1L20.5 10l-6.3 1.9L12 18l-2.2-6.1L3.5 10l6.3-1.9L12 2z"/>
+            </svg>
+            IA
+          </span>
+        </div>
+        <p class="marca__sub">Panorama semanal do mercado</p>
+      </div>
+    </a>
+
+    <div class="topo__direita">
+      <div class="atualizacao" title="Data desta edição">
+        <span class="atualizacao__rotulo">Atualizado em</span>
+        <strong class="atualizacao__valor" id="dataAtualizacao">—</strong>
+        <span class="atualizacao__relativo" id="dataRelativa"></span>
+      </div>
+      <button class="btn-icone" id="btnTema" type="button" aria-label="Alternar tema claro e escuro">
+        <span class="btn-icone__sol" aria-hidden="true">☀</span>
+        <span class="btn-icone__lua" aria-hidden="true">☾</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Barra de navegação + acesso ao histórico -->
+  <nav class="navbar" aria-label="Seções do site">
+    <div class="container navbar__linha">
+      <ul class="navbar__links" id="navLinks">
+        <li><a href="#panorama">Panorama</a></li>
+        <li><a href="#brasil">Brasil</a></li>
+        <li><a href="#cripto">Criptomoedas</a></li>
+        <li><a href="#internacional">Internacional</a></li>
+        <li><a href="#commodities">Commodities</a></li>
+        <li><a href="#agenda">Agenda</a></li>
+        <li><a href="#glossario">Glossário</a></li>
+      </ul>
+
+      <div class="navbar__controles">
+        <a class="btn-historico" href="../historico.html">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l3 2"/>
+          </svg>
+          Histórico
+          <span class="btn-historico__qtd" id="qtdEdicoes" hidden></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main id="conteudo">
+
+  <div class="faixa-edicao">
+    <div class="container faixa-edicao__linha">
+      <span>Esta é a edição arquivada de <strong>06/09/2026</strong>. Os números são daquele dia e não se atualizam.</span>
+      <a href="../index.html">Ir para a edição atual &rarr;</a>
+    </div>
+  </div>
+
+
+  <!-- Aviso de números ainda não conferidos (some sozinho) -->
+  <div class="aviso-exemplo" id="avisoExemplo" hidden>
+    <div class="container">
+      <strong><span id="qtdExemplo">0</span> indicadores ainda com número de exemplo:</strong>
+      <span id="listaExemplo"></span>.
+      Substitua no <code>js/dados.js</code> e apague a linha <code>exemplo: true</code> —
+      este aviso some quando não sobrar nenhum.
+    </div>
+  </div>
+
+  <!-- ====================== PANORAMA ====================== -->
+  <section class="secao secao--abertura" id="panorama">
+    <div class="container">
+      <div class="abertura">
+        <div class="abertura__texto">
+          <p class="secao__etiqueta">A semana em uma olhada</p>
+          <h2 class="abertura__titulo">Panorama</h2>
+          <p class="abertura__resumo" id="resumoSemana"></p>
+          <div class="mercados" id="statusDados"></div>
+        </div>
+        <div class="abertura__cards" id="cardsDestaque"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== RADAR DA SEMANA ====================== -->
+  <section class="secao" id="radar">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">O que moveu o mercado</p>
+          <h2 class="secao__titulo">Radar da semana</h2>
+        </div>
+      </header>
+      <div class="destaques" id="listaDestaques"></div>
+    </div>
+  </section>
+
+  <!-- ====================== BRASIL ====================== -->
+  <section class="secao" id="brasil">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Mercado nacional</p>
+          <h2 class="secao__titulo">Brasil</h2>
+        </div>
+        <p class="secao__apoio">Índices da B3, juros, inflação, câmbio, fundos imobiliários e ações.</p>
+      </header>
+
+      <h3 class="grupo__titulo">Índices da bolsa</h3>
+      <div class="grade" data-grupo="br-indices"></div>
+
+      <h3 class="grupo__titulo">Juros e inflação</h3>
+      <div class="grade" data-grupo="br-macro"></div>
+
+      <h3 class="grupo__titulo">Câmbio</h3>
+      <div class="grade" data-grupo="cambio"></div>
+
+      <h3 class="grupo__titulo">Fundos imobiliários</h3>
+      <div class="grade" data-grupo="br-fiis"></div>
+
+      <h3 class="grupo__titulo">Ações brasileiras</h3>
+      <div class="grade" data-grupo="br-acoes"></div>
+    </div>
+  </section>
+
+  <!-- ====================== CRIPTOMOEDAS ====================== -->
+  <section class="secao" id="cripto">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Ativos digitais</p>
+          <h2 class="secao__titulo">Criptomoedas</h2>
+        </div>
+        <p class="secao__apoio">Cotações em reais, atualizadas ao vivo. Classe de altíssimo risco.</p>
+      </header>
+      <div class="grade" data-grupo="cripto"></div>
+    </div>
+  </section>
+
+  <!-- ====================== INTERNACIONAL ====================== -->
+  <section class="secao" id="internacional">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Mercado global</p>
+          <h2 class="secao__titulo">Internacional</h2>
+        </div>
+        <p class="secao__apoio">Índices americanos, ETFs e as maiores empresas do mundo.</p>
+      </header>
+
+      <h3 class="grupo__titulo">Índices</h3>
+      <div class="grade" data-grupo="int-indices"></div>
+
+      <h3 class="grupo__titulo">ETFs</h3>
+      <div class="grade" data-grupo="int-etfs"></div>
+
+      <h3 class="grupo__titulo">Ações</h3>
+      <div class="grade" data-grupo="int-acoes"></div>
+    </div>
+  </section>
+
+  <!-- ====================== COMMODITIES ====================== -->
+  <section class="secao" id="commodities">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Matérias-primas</p>
+          <h2 class="secao__titulo">Commodities</h2>
+        </div>
+        <p class="secao__apoio">O que pesa em Petrobras, Vale e no preço do combustível.</p>
+      </header>
+      <div class="grade" data-grupo="commodities"></div>
+    </div>
+  </section>
+
+  <!-- ====================== AGENDA ====================== -->
+  <section class="secao" id="agenda">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Próximos dias</p>
+          <h2 class="secao__titulo">Agenda econômica</h2>
+        </div>
+        <p class="secao__apoio">Clique em qualquer linha para ver o dado na fonte oficial.</p>
+      </header>
+      <ol class="agenda" id="listaAgenda"></ol>
+      <div class="calendarios" id="listaCalendarios"></div>
+    </div>
+  </section>
+
+  <!-- ====================== GLOSSÁRIO ====================== -->
+  <section class="secao" id="glossario">
+    <div class="container">
+      <header class="secao__cabecalho">
+        <div>
+          <p class="secao__etiqueta">Para quem está começando</p>
+          <h2 class="secao__titulo">Entenda os termos</h2>
+        </div>
+      </header>
+      <div class="glossario" id="listaGlossario"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ====================== RODAPÉ ====================== -->
+<footer class="rodape">
+  <div class="container rodape__grade">
+    <div>
+      <p class="rodape__marca">Radar de Investimentos</p>
+      <p class="rodape__linha">
+        Edição de <strong id="rodapeData">—</strong>, por <span id="rodapeResponsavel">—</span>.
+      </p>
+      <p class="rodape__linha"><a class="rodape__link" href="../historico.html">Ver edições anteriores →</a></p>
+    </div>
+    <div>
+      <p class="rodape__titulo">Fontes</p>
+      <p class="rodape__linha">B3, IBGE, Banco Central (SGS), FGV IBRE, AwesomeAPI, S&amp;P Dow Jones, Nasdaq, NYSE, CBOE, ICE.</p>
+    </div>
+    <div>
+      <p class="rodape__titulo">Como esta edicao e feita</p>
+      <p class="rodape__linha">
+        Montada com auxilio de intelig&ecirc;ncia artificial. Os n&uacute;meros n&atilde;o s&atilde;o gerados
+        pelo modelo: v&ecirc;m de APIs p&uacute;blicas (Yahoo Finance, Banco Central e AwesomeAPI)
+        e o que n&atilde;o for confirmado na fonte n&atilde;o entra na p&aacute;gina.
+      </p>
+    </div>
+    <div>
+      <p class="rodape__titulo">Aviso</p>
+      <p class="rodape__linha">
+        Conteúdo com finalidade informativa e educacional. Não constitui recomendação
+        de compra ou venda de qualquer ativo. Rentabilidade passada não garante
+        rentabilidade futura.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<button class="ao-topo" id="btnTopo" type="button" aria-label="Voltar ao topo">↑</button>
+
+<script>
+const RADAR = {
+ "meta": {
+  "atualizadoEm": "2026-09-06T12:29",
+  "responsavel": "Lucas Santos"
+ },
+ "resumo": "Semana de alta forte no Brasil: o Ibovespa subiu 5,40% e fechou em 185.147,16 pontos, com as ações brasileiras acompanhadas aqui avançando 5,50% em média — Banco do Brasil (+11,65%), CSN Mineração (+9,83%) e Cemig (+8,12%) à frente. O dólar recuou 1,16%, a R$ 5,1249. Lá fora o movimento foi o oposto: as ações americanas caíram 0,86% em média, com S&P 500 e Nasdaq praticamente de lado. O petróleo Brent subiu 6,58%, a US$ 96,28, e as criptomoedas avançaram 5,26% em média.",
+ "destaques": [
+  {
+   "titulo": "Bolsa brasileira dispara",
+   "texto": "Ibovespa sobe 5,40% na semana e fecha em 185.147,16 pontos, acumulando 31,32% em doze meses.",
+   "tom": "positivo"
+  },
+  {
+   "titulo": "Bancos e mineração puxam",
+   "texto": "Banco do Brasil (+11,65%), CSN Mineração (+9,83%) e Itaúsa (+7,72%) lideram as altas da semana na B3.",
+   "tom": "positivo"
+  },
+  {
+   "titulo": "Tecnologia americana cede",
+   "texto": "Amazon (-2,97%), Microsoft (-2,69%) e Alphabet (-2,35%) recuam, e as ações dos EUA caem 0,86% em média.",
+   "tom": "negativo"
+  },
+  {
+   "titulo": "Dólar abaixo de R$ 5,13",
+   "texto": "A moeda americana recuou 1,16% na semana e acumula queda de 5,88% em doze meses.",
+   "tom": "neutro"
+  },
+  {
+   "titulo": "Criptomoedas reagem",
+   "texto": "As sete acompanhadas subiram 5,26% em média, com Litecoin (+12,02%) à frente — mas todas seguem negativas em doze meses.",
+   "tom": "neutro"
+  }
+ ],
+ "agenda": [
+  {
+   "data": "2026-09-10",
+   "pais": "BR",
+   "relevancia": "media",
+   "evento": "Pesquisa Mensal de Serviços",
+   "fonte": "IBGE",
+   "link": "https://www.ibge.gov.br/estatisticas/economicas/servicos/9229-pesquisa-mensal-de-servicos.html"
+  },
+  {
+   "data": "2026-09-11",
+   "pais": "BR",
+   "relevancia": "alta",
+   "evento": "IPCA de agosto",
+   "fonte": "IBGE",
+   "link": "https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html"
+  },
+  {
+   "data": "2026-09-15",
+   "pais": "BR",
+   "relevancia": "media",
+   "evento": "Pesquisa Mensal de Comércio",
+   "fonte": "IBGE",
+   "link": "https://www.ibge.gov.br/estatisticas/economicas/comercio/9227-pesquisa-mensal-de-comercio.html"
+  },
+  {
+   "data": "2026-09-16",
+   "pais": "EUA",
+   "relevancia": "alta",
+   "evento": "Decisão de juros do FOMC",
+   "fonte": "Federal Reserve",
+   "link": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+  },
+  {
+   "data": "2026-09-25",
+   "pais": "BR",
+   "relevancia": "alta",
+   "evento": "IPCA-15 de setembro",
+   "fonte": "IBGE",
+   "link": "https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9260-indice-nacional-de-precos-ao-consumidor-amplo-15.html"
+  },
+  {
+   "data": "2026-10-02",
+   "pais": "BR",
+   "relevancia": "media",
+   "evento": "Produção industrial de agosto",
+   "fonte": "IBGE",
+   "link": "https://www.ibge.gov.br/estatisticas/economicas/industria/9294-pesquisa-industrial-mensal-producao-fisica-brasil.html"
+  }
+ ],
+ "calendarios": [
+  {
+   "nome": "Calendário de divulgações do IBGE",
+   "link": "https://www.ibge.gov.br/calendario-divulgacoes-novoportal.html"
+  },
+  {
+   "nome": "Calendário do Banco Central",
+   "link": "https://www.bcb.gov.br/estatisticas/calendarioestatisticas"
+  },
+  {
+   "nome": "Reuniões do Copom",
+   "link": "https://www.bcb.gov.br/controleinflacao/copom"
+  },
+  {
+   "nome": "Calendário do Federal Reserve",
+   "link": "https://www.federalreserve.gov/newsevents/calendar.htm"
+  },
+  {
+   "nome": "Calendário do BLS (dados dos EUA)",
+   "link": "https://www.bls.gov/schedule/news_release/"
+  }
+ ],
+ "ativos": [
+  {
+   "id": "ibovespa",
+   "grupo": "br-indices",
+   "destaque": true,
+   "nome": "Ibovespa",
+   "ticker": "IBOV",
+   "formato": "pontos",
+   "descricao": "As ~85 ações mais negociadas da B3. É o termômetro da bolsa brasileira.",
+   "valor": 185147.16,
+   "variacao12m": 31.32,
+   "fonte": "B3"
+  },
+  {
+   "id": "ifix",
+   "grupo": "br-indices",
+   "nome": "IFIX",
+   "ticker": "IFIX",
+   "formato": "pontos",
+   "descricao": "Índice dos fundos imobiliários listados na B3.",
+   "valor": 3769.71,
+   "variacao12m": null,
+   "fonte": "B3"
+  },
+  {
+   "id": "smll",
+   "grupo": "br-indices",
+   "nome": "Small Caps",
+   "ticker": "SMLL",
+   "formato": "pontos",
+   "descricao": "Empresas de menor valor de mercado. Costuma oscilar mais que o Ibovespa.",
+   "valor": 2249.59,
+   "variacao12m": null,
+   "fonte": "B3"
+  },
+  {
+   "id": "idiv",
+   "grupo": "br-indices",
+   "nome": "Dividendos",
+   "ticker": "IDIV",
+   "formato": "pontos",
+   "descricao": "Ações que mais pagaram proventos nos últimos anos.",
+   "valor": 12994.74,
+   "variacao12m": null,
+   "fonte": "B3"
+  },
+  {
+   "id": "selic",
+   "grupo": "br-macro",
+   "destaque": true,
+   "nome": "Selic (meta)",
+   "ticker": "SELIC",
+   "formato": "percentual",
+   "sufixo": "a.a.",
+   "descricao": "Taxa básica de juros definida pelo Copom. Referência de toda a renda fixa.",
+   "valor": 14,
+   "variacao12m": -1,
+   "fonte": "Banco Central (SGS 432)",
+   "aoVivo": "sgs-432"
+  },
+  {
+   "id": "cdi",
+   "grupo": "br-macro",
+   "nome": "CDI",
+   "ticker": "CDI",
+   "formato": "percentual",
+   "sufixo": "a.a.",
+   "descricao": "Referência da renda fixa privada. Anda praticamente colado na Selic.",
+   "valor": 13.9,
+   "variacao12m": -1,
+   "fonte": "Banco Central (SGS 4389)",
+   "aoVivo": "sgs-4389"
+  },
+  {
+   "id": "ipca12",
+   "grupo": "br-macro",
+   "destaque": true,
+   "inverso": true,
+   "nome": "IPCA (12 meses)",
+   "ticker": "IPCA",
+   "formato": "percentual",
+   "descricao": "Inflação oficial acumulada em 12 meses. É o que corrói o poder de compra.",
+   "valor": 4.44,
+   "variacao12m": -0.79,
+   "fonte": "IBGE / BCB (SGS 13522)",
+   "aoVivo": "sgs-13522"
+  },
+  {
+   "id": "ipcaMes",
+   "grupo": "br-macro",
+   "inverso": true,
+   "nome": "IPCA (mês)",
+   "ticker": "IPCA-M",
+   "formato": "percentual",
+   "descricao": "Variação da inflação no último mês fechado.",
+   "valor": 0.07,
+   "variacao12m": -0.19,
+   "fonte": "IBGE / BCB (SGS 433)",
+   "aoVivo": "sgs-433"
+  },
+  {
+   "id": "igpm",
+   "grupo": "br-macro",
+   "inverso": true,
+   "nome": "IGP-M (12 meses)",
+   "ticker": "IGP-M",
+   "formato": "percentual",
+   "descricao": "Índice de inflação usado no reajuste de aluguéis e contratos.",
+   "valor": 2.18,
+   "variacao12m": -0.85,
+   "fonte": "FGV / BCB (SGS 189)",
+   "aoVivo": "sgs-189"
+  },
+  {
+   "id": "usdbrl",
+   "grupo": "cambio",
+   "destaque": true,
+   "nome": "Dólar comercial",
+   "ticker": "USD/BRL",
+   "formato": "brl",
+   "casas": 4,
+   "descricao": "Quanto custa 1 dólar em reais. Afeta inflação, viagens e importados.",
+   "valor": 5.1249,
+   "variacao12m": -5.88,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-USD"
+  },
+  {
+   "id": "eurbrl",
+   "grupo": "cambio",
+   "nome": "Euro",
+   "ticker": "EUR/BRL",
+   "formato": "brl",
+   "casas": 4,
+   "descricao": "Cotação do euro em reais.",
+   "valor": 5.9509,
+   "variacao12m": -6.27,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-EUR"
+  },
+  {
+   "id": "btcbrl",
+   "grupo": "cripto",
+   "destaque": false,
+   "nome": "Bitcoin",
+   "ticker": "BTC/BRL",
+   "formato": "brl",
+   "casas": 0,
+   "descricao": "A maior e mais líquida das criptomoedas. Serve de termômetro do apetite a risco.",
+   "valor": 412182,
+   "variacao12m": -33.94,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-BTC"
+  },
+  {
+   "id": "ethbrl",
+   "grupo": "cripto",
+   "nome": "Ethereum",
+   "ticker": "ETH/BRL",
+   "formato": "brl",
+   "descricao": "Segunda maior cripto. É a rede onde roda a maior parte dos contratos inteligentes.",
+   "valor": 12831.3,
+   "variacao12m": -49.37,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-ETH"
+  },
+  {
+   "id": "bnbbrl",
+   "grupo": "cripto",
+   "nome": "BNB",
+   "ticker": "BNB/BRL",
+   "formato": "brl",
+   "descricao": "Moeda do ecossistema da Binance, a maior corretora de cripto do mundo.",
+   "valor": 3852,
+   "variacao12m": -22.53,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-BNB"
+  },
+  {
+   "id": "solbrl",
+   "grupo": "cripto",
+   "nome": "Solana",
+   "ticker": "SOL/BRL",
+   "formato": "brl",
+   "descricao": "Rede concorrente do Ethereum, conhecida por transações rápidas e baratas.",
+   "valor": 547.5,
+   "variacao12m": -57.96,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-SOL"
+  },
+  {
+   "id": "xrpbrl",
+   "grupo": "cripto",
+   "nome": "XRP",
+   "ticker": "XRP/BRL",
+   "formato": "brl",
+   "descricao": "Criada para transferências internacionais entre instituições financeiras.",
+   "valor": 7.29,
+   "variacao12m": -56.37,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-XRP"
+  },
+  {
+   "id": "dogebrl",
+   "grupo": "cripto",
+   "nome": "Dogecoin",
+   "ticker": "DOGE/BRL",
+   "formato": "brl",
+   "casas": 4,
+   "descricao": "Nasceu como piada e virou a principal “meme coin”. Muito sensível a notícias.",
+   "valor": 0.4586,
+   "variacao12m": -69.02,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-DOGE"
+  },
+  {
+   "id": "ltcbrl",
+   "grupo": "cripto",
+   "nome": "Litecoin",
+   "ticker": "LTC/BRL",
+   "formato": "brl",
+   "descricao": "Uma das criptos mais antigas, criada como versão mais leve do Bitcoin.",
+   "valor": 281.5,
+   "variacao12m": -55.59,
+   "fonte": "AwesomeAPI",
+   "aoVivo": "moeda-LTC"
+  },
+  {
+   "id": "plag11",
+   "grupo": "br-fiis",
+   "nome": "PLAG11",
+   "ticker": "PLAG11",
+   "formato": "brl",
+   "descricao": "FII de tijolo: carteira de imóveis físicos, vive da renda dos aluguéis.",
+   "valor": 62.88,
+   "variacao12m": 27.68,
+   "dy": 10.34,
+   "fonte": "B3"
+  },
+  {
+   "id": "mcci11",
+   "grupo": "br-fiis",
+   "nome": "MCCI11",
+   "ticker": "MCCI11",
+   "formato": "brl",
+   "descricao": "FII de papel: investe em CRIs (títulos de dívida imobiliária).",
+   "valor": 95.25,
+   "variacao12m": 8.35,
+   "dy": 12.6,
+   "fonte": "B3"
+  },
+  {
+   "id": "kncr11",
+   "grupo": "br-fiis",
+   "nome": "KNCR11",
+   "ticker": "KNCR11",
+   "formato": "brl",
+   "descricao": "FII de papel com CRIs atrelados ao CDI. Rende mais quando a Selic está alta.",
+   "valor": 106.82,
+   "variacao12m": 1.74,
+   "dy": 13.24,
+   "fonte": "B3"
+  },
+  {
+   "id": "cpts11",
+   "grupo": "br-fiis",
+   "nome": "CPTS11",
+   "ticker": "CPTS11",
+   "formato": "brl",
+   "descricao": "FII de papel, com CRIs e cotas de outros fundos imobiliários.",
+   "valor": 7.5,
+   "variacao12m": 0.94,
+   "dy": 14.33,
+   "fonte": "B3"
+  },
+  {
+   "id": "brco11",
+   "grupo": "br-fiis",
+   "nome": "BRCO11",
+   "ticker": "BRCO11",
+   "formato": "brl",
+   "descricao": "FII de tijolo: galpões logísticos alugados para grandes operadores.",
+   "valor": 111.42,
+   "variacao12m": 0.26,
+   "dy": 9.84,
+   "fonte": "B3"
+  },
+  {
+   "id": "xpml11",
+   "grupo": "br-fiis",
+   "nome": "XPML11",
+   "ticker": "XPML11",
+   "formato": "brl",
+   "descricao": "FII de tijolo: participação em shopping centers pelo país.",
+   "valor": 104.03,
+   "variacao12m": 0.03,
+   "dy": 10.61,
+   "fonte": "B3"
+  },
+  {
+   "id": "mxrf11",
+   "grupo": "br-fiis",
+   "nome": "MXRF11",
+   "ticker": "MXRF11",
+   "formato": "brl",
+   "descricao": "FII híbrido e o mais popular do país, com cota de valor baixo.",
+   "valor": 9.19,
+   "variacao12m": -3.47,
+   "dy": 13,
+   "fonte": "B3"
+  },
+  {
+   "id": "visc11",
+   "grupo": "br-fiis",
+   "nome": "VISC11",
+   "ticker": "VISC11",
+   "formato": "brl",
+   "descricao": "FII de tijolo: carteira de shopping centers.",
+   "valor": 103.8,
+   "variacao12m": 0.04,
+   "dy": 9.6,
+   "fonte": "B3"
+  },
+  {
+   "id": "gare11",
+   "grupo": "br-fiis",
+   "nome": "GARE11",
+   "ticker": "GARE11",
+   "formato": "brl",
+   "descricao": "FII de tijolo: renda urbana, com imóveis alugados no varejo e na logística.",
+   "valor": 8.34,
+   "variacao12m": -7.33,
+   "dy": 10.95,
+   "fonte": "B3"
+  },
+  {
+   "id": "xplg11",
+   "grupo": "br-fiis",
+   "nome": "XPLG11",
+   "ticker": "XPLG11",
+   "formato": "brl",
+   "descricao": "FII de tijolo: galpões logísticos e industriais.",
+   "valor": 90.7,
+   "variacao12m": -6.62,
+   "dy": 10.85,
+   "fonte": "B3"
+  },
+  {
+   "id": "rbrr11",
+   "grupo": "br-fiis",
+   "nome": "RBRR11",
+   "ticker": "RBRR11",
+   "formato": "brl",
+   "descricao": "FII de papel focado em CRIs de baixo risco de crédito (high grade).",
+   "valor": 73,
+   "variacao12m": -16.1,
+   "dy": 13.53,
+   "fonte": "B3"
+  },
+  {
+   "id": "vale3",
+   "grupo": "br-acoes",
+   "nome": "Vale",
+   "ticker": "VALE3",
+   "formato": "brl",
+   "descricao": "Maior mineradora do país. O resultado acompanha o minério de ferro e a China.",
+   "valor": 78.62,
+   "variacao12m": 41.12,
+   "dy": 7.14,
+   "fonte": "B3"
+  },
+  {
+   "id": "itsa4",
+   "grupo": "br-acoes",
+   "nome": "Itaúsa",
+   "ticker": "ITSA4",
+   "formato": "brl",
+   "descricao": "Holding que controla o Itaú Unibanco e tem participação em empresas industriais.",
+   "valor": 13.95,
+   "variacao12m": 29,
+   "dy": 8.08,
+   "fonte": "B3"
+  },
+  {
+   "id": "bbse3",
+   "grupo": "br-acoes",
+   "nome": "BB Seguridade",
+   "ticker": "BBSE3",
+   "formato": "brl",
+   "descricao": "Braço de seguros e previdência do Banco do Brasil. Conhecida por dividendos altos.",
+   "valor": 42.16,
+   "variacao12m": 30.89,
+   "dy": 10.89,
+   "fonte": "B3"
+  },
+  {
+   "id": "cmin3",
+   "grupo": "br-acoes",
+   "nome": "CSN Mineração",
+   "ticker": "CMIN3",
+   "formato": "brl",
+   "descricao": "Braço de mineração da CSN. Também depende do preço do minério de ferro.",
+   "valor": 6.59,
+   "variacao12m": 28.21,
+   "dy": 5.85,
+   "fonte": "B3"
+  },
+  {
+   "id": "cmig3",
+   "grupo": "br-acoes",
+   "nome": "Cemig",
+   "ticker": "CMIG3",
+   "formato": "brl",
+   "descricao": "Elétrica de Minas Gerais. Setor regulado, receita previsível.",
+   "valor": 17.04,
+   "variacao12m": 12.25,
+   "dy": 8.19,
+   "fonte": "B3"
+  },
+  {
+   "id": "amzo34",
+   "grupo": "br-acoes",
+   "nome": "Amazon (BDR)",
+   "ticker": "AMZO34",
+   "formato": "brl",
+   "descricao": "BDR da Amazon: um recibo negociado na B3 que dá exposição à ação americana.",
+   "nota": "Mesma exposição de AMZN — se você acompanha as duas, conte a posição uma vez só.",
+   "valor": 66.57,
+   "variacao12m": 4.11,
+   "dy": 0,
+   "fonte": "B3"
+  },
+  {
+   "id": "bbas3",
+   "grupo": "br-acoes",
+   "nome": "Banco do Brasil",
+   "ticker": "BBAS3",
+   "formato": "brl",
+   "descricao": "Banco público com forte presença no crédito rural.",
+   "valor": 22.52,
+   "variacao12m": 10.28,
+   "dy": 2.91,
+   "fonte": "B3"
+  },
+  {
+   "id": "viva3",
+   "grupo": "br-acoes",
+   "nome": "Vivara",
+   "ticker": "VIVA3",
+   "formato": "brl",
+   "descricao": "Maior rede de joalherias do país. Varejo sensível a juros e renda.",
+   "valor": 23.13,
+   "variacao12m": -20.1,
+   "dy": 3.02,
+   "fonte": "B3"
+  },
+  {
+   "id": "sp500",
+   "grupo": "int-indices",
+   "destaque": true,
+   "nome": "S&P 500",
+   "ticker": "SPX",
+   "formato": "pontos",
+   "descricao": "As 500 maiores empresas dos EUA. A principal referência de bolsa no mundo.",
+   "valor": 7718.6,
+   "variacao12m": 19.09,
+   "fonte": "S&P Dow Jones"
+  },
+  {
+   "id": "nasdaq",
+   "grupo": "int-indices",
+   "destaque": true,
+   "nome": "Nasdaq Composite",
+   "ticker": "IXIC",
+   "formato": "pontos",
+   "descricao": "Concentra as empresas de tecnologia. Mais volátil que o S&P 500.",
+   "valor": 26506.99,
+   "variacao12m": 22.15,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "dowjones",
+   "grupo": "int-indices",
+   "nome": "Dow Jones",
+   "ticker": "DJI",
+   "formato": "pontos",
+   "descricao": "30 grandes empresas tradicionais dos EUA. Menos exposto a tecnologia.",
+   "valor": 53414.25,
+   "variacao12m": 17.65,
+   "fonte": "S&P Dow Jones"
+  },
+  {
+   "id": "vix",
+   "grupo": "int-indices",
+   "inverso": true,
+   "nome": "VIX — índice do medo",
+   "ticker": "VIX",
+   "formato": "pontos",
+   "descricao": "Mede o nervosismo do mercado. Acima de 20 = tensão; abaixo de 15 = calmaria.",
+   "valor": 14.53,
+   "variacao12m": -5.03,
+   "fonte": "CBOE"
+  },
+  {
+   "id": "voo",
+   "grupo": "int-etfs",
+   "nome": "Vanguard S&P 500",
+   "ticker": "VOO",
+   "formato": "usd",
+   "descricao": "ETF que replica o S&P 500. Uma cota = pedacinho das 500 maiores empresas dos EUA.",
+   "valor": 708.01,
+   "variacao12m": 19,
+   "fonte": "NYSE Arca"
+  },
+  {
+   "id": "pph",
+   "grupo": "int-etfs",
+   "nome": "VanEck Pharmaceutical",
+   "ticker": "PPH",
+   "formato": "usd",
+   "descricao": "ETF setorial: cesta das maiores farmacêuticas do mundo.",
+   "nota": "Preço com um dia de defasagem em relação aos demais ativos internacionais.",
+   "valor": 114.21,
+   "variacao12m": 28.28,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "nvda",
+   "grupo": "int-acoes",
+   "nome": "Nvidia",
+   "ticker": "NVDA",
+   "formato": "usd",
+   "descricao": "Líder em chips para inteligência artificial.",
+   "valor": 230.36,
+   "variacao12m": 37.92,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "googl",
+   "grupo": "int-acoes",
+   "nome": "Alphabet (Google)",
+   "ticker": "GOOGL",
+   "formato": "usd",
+   "descricao": "Dona do Google, do YouTube e do Android.",
+   "valor": 338.46,
+   "variacao12m": 44.03,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "tsla",
+   "grupo": "int-acoes",
+   "nome": "Tesla",
+   "ticker": "TSLA",
+   "formato": "usd",
+   "descricao": "Carros elétricos, energia e robótica.",
+   "valor": 354.08,
+   "variacao12m": 0.92,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "aapl",
+   "grupo": "int-acoes",
+   "nome": "Apple",
+   "ticker": "AAPL",
+   "formato": "usd",
+   "descricao": "iPhone e serviços; disputa o posto de maior empresa do mundo.",
+   "valor": 319.97,
+   "variacao12m": 33.49,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "amzn",
+   "grupo": "int-acoes",
+   "nome": "Amazon",
+   "ticker": "AMZN",
+   "formato": "usd",
+   "descricao": "E-commerce e AWS, a maior provedora de nuvem do mundo.",
+   "nota": "Mesma exposição do BDR AMZO34, listado na seção de ações brasileiras.",
+   "valor": 258.51,
+   "variacao12m": 11.27,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "ko",
+   "grupo": "int-acoes",
+   "nome": "Coca-Cola",
+   "ticker": "KO",
+   "formato": "usd",
+   "descricao": "Consumo defensivo: vende bem em qualquer ciclo econômico.",
+   "valor": 88.07,
+   "variacao12m": 29.59,
+   "fonte": "NYSE"
+  },
+  {
+   "id": "crwd",
+   "grupo": "int-acoes",
+   "nome": "CrowdStrike",
+   "ticker": "CRWD",
+   "formato": "usd",
+   "descricao": "Cibersegurança em nuvem. Crescimento alto e múltiplo caro.",
+   "valor": 213.1,
+   "variacao12m": 104.1,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "nke",
+   "grupo": "int-acoes",
+   "nome": "Nike",
+   "ticker": "NKE",
+   "formato": "usd",
+   "descricao": "Maior marca de artigos esportivos do mundo.",
+   "valor": 38.4,
+   "variacao12m": -48.04,
+   "fonte": "NYSE"
+  },
+  {
+   "id": "msft",
+   "grupo": "int-acoes",
+   "nome": "Microsoft",
+   "ticker": "MSFT",
+   "formato": "usd",
+   "descricao": "Windows, nuvem Azure e participação relevante em IA.",
+   "valor": 499.7,
+   "variacao12m": 0.95,
+   "fonte": "Nasdaq"
+  },
+  {
+   "id": "brent",
+   "grupo": "commodities",
+   "nome": "Petróleo Brent",
+   "ticker": "BRENT",
+   "formato": "usd",
+   "sufixo": "/barril",
+   "descricao": "Referência mundial do petróleo. Pesa na Petrobras e no preço da gasolina.",
+   "valor": 96.28,
+   "variacao12m": 45.83,
+   "fonte": "ICE"
+  },
+  {
+   "id": "ouro",
+   "grupo": "commodities",
+   "nome": "Ouro",
+   "ticker": "XAU",
+   "formato": "usd",
+   "sufixo": "/onça",
+   "casas": 0,
+   "descricao": "Reserva de valor clássica. Sobe quando o mercado busca proteção.",
+   "valor": 4477,
+   "variacao12m": 23.05,
+   "fonte": "LBMA"
+  },
+  {
+   "id": "minerio",
+   "grupo": "commodities",
+   "nome": "Minério de ferro",
+   "ticker": "IRON",
+   "formato": "usd",
+   "sufixo": "/ton",
+   "descricao": "Principal commodity da Vale. Depende muito da demanda chinesa.",
+   "nota": "Até 05/09/2026 este card trazia US$ 161,91 — um preço de agosto de 2021 que a fonte devolvia como se fosse atual. Corrigido em 06/09/2026 para o fechamento real, e a série das edições anteriores foi ajustada junto.",
+   "valor": 99.57,
+   "variacao12m": -5.11,
+   "fonte": "SGX / Dalian"
+  }
+ ],
+ "glossario": [
+  {
+   "termo": "Ibovespa",
+   "texto": "Carteira teórica com as ações mais negociadas da B3. Quando dizem “a bolsa subiu”, normalmente é dele que estão falando."
+  },
+  {
+   "termo": "IFIX",
+   "texto": "Mesma ideia do Ibovespa, mas para fundos imobiliários (FIIs)."
+  },
+  {
+   "termo": "Selic",
+   "texto": "Taxa básica de juros da economia. Sobe para segurar a inflação, cai para estimular o consumo."
+  },
+  {
+   "termo": "CDI",
+   "texto": "Taxa dos empréstimos entre bancos. É a referência de rendimento da renda fixa (ex.: “CDB a 110% do CDI”)."
+  },
+  {
+   "termo": "IPCA",
+   "texto": "Inflação oficial do Brasil, medida pelo IBGE. Se seu investimento rende menos que o IPCA, você perdeu poder de compra."
+  },
+  {
+   "termo": "IGP-M",
+   "texto": "Outro índice de inflação, mais sensível a atacado e câmbio. Usado em reajuste de aluguel."
+  },
+  {
+   "termo": "Dividend yield (DY)",
+   "texto": "Quanto o ativo pagou em proventos nos últimos 12 meses, em % do preço. DY de 10% = pagou R$ 10 para cada R$ 100 investidos."
+  },
+  {
+   "termo": "FII de papel",
+   "texto": "Fundo imobiliário que investe em títulos de dívida (CRIs) em vez de imóveis. O rendimento acompanha juros e inflação."
+  },
+  {
+   "termo": "FII de tijolo",
+   "texto": "Fundo imobiliário dono de imóveis de verdade — shoppings, galpões, lajes — e que vive do aluguel deles."
+  },
+  {
+   "termo": "BDR",
+   "texto": "Recibo negociado na B3 que representa uma ação estrangeira. Permite investir lá fora comprando em reais."
+  },
+  {
+   "termo": "ETF",
+   "texto": "Fundo negociado em bolsa que replica um índice ou setor. Comprar uma cota é comprar a cesta inteira de uma vez."
+  },
+  {
+   "termo": "Criptomoeda",
+   "texto": "Ativo digital sem banco central por trás. Não tem garantia nenhuma e oscila muito mais que ações — as quedas de 50% em um ano são comuns."
+  },
+  {
+   "termo": "S&P 500",
+   "texto": "Índice das 500 maiores empresas listadas nos EUA. Referência global de renda variável."
+  },
+  {
+   "termo": "Nasdaq",
+   "texto": "Índice com forte peso de tecnologia. Tende a oscilar mais que o S&P 500."
+  },
+  {
+   "termo": "Dow Jones",
+   "texto": "Índice antigo com 30 grandes empresas americanas, ponderado por preço da ação."
+  },
+  {
+   "termo": "VIX",
+   "texto": "Volatilidade esperada do S&P 500 para os próximos 30 dias. Apelidado de “índice do medo”."
+  },
+  {
+   "termo": "Commodity",
+   "texto": "Matéria-prima negociada globalmente com preço padronizado: petróleo, ouro, minério, soja."
+  },
+  {
+   "termo": "Volatilidade",
+   "texto": "O tamanho das oscilações de um ativo. Mais volátil = mais risco e mais oportunidade."
+  }
+ ]
+};
+const RADAR_HISTORICO = [
+ {
+  "atualizadoEm": "2026-08-30T23:29",
+  "responsavel": "Lucas Santos",
+  "arquivo": "historico/2026-08-30.html",
+  "resumo": "Fim de semana sem pregão: o retrato da bolsa segue o do fechamento de sexta, com o Ibovespa em 175.664,62 pontos e alta de 24,54% em doze meses. No pano de fundo, a Selic está em 14,00% ao ano, um ponto percentual abaixo de doze meses atrás, e o IPCA acumulado em 4,44%, também em queda no período. As três commodities acompanhadas fecham o ano em alta, com o minério de ferro subindo 57,91%. O contraste fica com as criptomoedas, que recuaram de novo neste fim de semana e seguem todas no vermelho em doze meses, do Bitcoin (-32,34%) ao Dogecoin (-63,69%).",
+  "destaques": [
+   {
+    "titulo": "Bolsa no topo do período",
+    "texto": "Ibovespa em 175.664,62 pontos, alta de 24,54% em doze meses — o maior avanço entre os índices de bolsa acompanhados aqui.",
+    "tom": "positivo"
+   },
+   {
+    "titulo": "Juros e inflação cedem juntos",
+    "texto": "Selic a 14,00% ao ano, um ponto percentual abaixo de doze meses atrás, com o IPCA acumulado em 4,44% — recuo de 0,79 ponto no mesmo intervalo.",
+    "tom": "positivo"
+   },
+   {
+    "titulo": "Criptomoedas no vermelho",
+    "texto": "As sete criptomoedas acompanhadas caem em doze meses, de -32,34% no Bitcoin a -63,69% no Dogecoin, e todas recuaram de novo neste fim de semana.",
+    "tom": "negativo"
+   },
+   {
+    "titulo": "Commodities sustentadas",
+    "texto": "As três commodities do Radar fecham doze meses em alta: minério de ferro +57,91%, petróleo Brent +30,66% e ouro +25,91%.",
+    "tom": "positivo"
+   },
+   {
+    "titulo": "Câmbio mais fraco",
+    "texto": "Dólar a R$ 5,1850, recuo de 4,16% em doze meses. O euro, a R$ 6,0201, cede 5,06% no mesmo período.",
+    "tom": "neutro"
+   }
+  ],
+  "agenda": [
+   {
+    "data": "2026-09-01",
+    "pais": "BR",
+    "relevancia": "alta",
+    "evento": "PIB do 2º trimestre",
+    "fonte": "IBGE",
+    "link": "https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais/9300-contas-nacionais-trimestrais.html"
+   },
+   {
+    "data": "2026-09-02",
+    "pais": "BR",
+    "relevancia": "media",
+    "evento": "Produção industrial de julho",
+    "fonte": "IBGE",
+    "link": "https://www.ibge.gov.br/estatisticas/economicas/industria/9294-pesquisa-industrial-mensal-producao-fisica-brasil.html"
+   },
+   {
+    "data": "2026-09-10",
+    "pais": "BR",
+    "relevancia": "media",
+    "evento": "Pesquisa Mensal de Serviços",
+    "fonte": "IBGE",
+    "link": "https://www.ibge.gov.br/estatisticas/economicas/servicos/9229-pesquisa-mensal-de-servicos.html"
+   },
+   {
+    "data": "2026-09-11",
+    "pais": "BR",
+    "relevancia": "alta",
+    "evento": "IPCA de agosto",
+    "fonte": "IBGE",
+    "link": "https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html"
+   },
+   {
+    "data": "2026-09-16",
+    "pais": "EUA",
+    "relevancia": "alta",
+    "evento": "Decisão de juros do FOMC",
+    "fonte": "Federal Reserve",
+    "link": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+   },
+   {
+    "data": "2026-09-25",
+    "pais": "BR",
+    "relevancia": "alta",
+    "evento": "IPCA-15 de setembro",
+    "fonte": "IBGE",
+    "link": "https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9260-indice-nacional-de-precos-ao-consumidor-amplo-15.html"
+   }
+  ],
+  "ativos": [
+   {
+    "id": "ibovespa",
+    "valor": 175664.62,
+    "variacao12m": 24.54
+   },
+   {
+    "id": "ifix",
+    "valor": 3740.72
+   },
+   {
+    "id": "smll",
+    "valor": 2123.4
+   },
+   {
+    "id": "idiv",
+    "valor": 12292.07
+   },
+   {
+    "id": "selic",
+    "valor": 14,
+    "variacao12m": -1
+   },
+   {
+    "id": "cdi",
+    "valor": 13.9,
+    "variacao12m": -1
+   },
+   {
+    "id": "ipca12",
+    "valor": 4.44,
+    "variacao12m": -0.79
+   },
+   {
+    "id": "ipcaMes",
+    "valor": 0.07,
+    "variacao12m": -0.19
+   },
+   {
+    "id": "igpm",
+    "valor": 2.18,
+    "variacao12m": -0.85
+   },
+   {
+    "id": "usdbrl",
+    "valor": 5.185,
+    "variacao12m": -4.16
+   },
+   {
+    "id": "eurbrl",
+    "valor": 6.0201,
+    "variacao12m": -5.06
+   },
+   {
+    "id": "btcbrl",
+    "valor": 406483,
+    "variacao12m": -32.34
+   },
+   {
+    "id": "ethbrl",
+    "valor": 12623.8,
+    "variacao12m": -45.81
+   },
+   {
+    "id": "bnbbrl",
+    "valor": 3571,
+    "variacao12m": -23.92
+   },
+   {
+    "id": "solbrl",
+    "valor": 533.1,
+    "variacao12m": -51.16
+   },
+   {
+    "id": "xrpbrl",
+    "valor": 7.02,
+    "variacao12m": -54.15
+   },
+   {
+    "id": "dogebrl",
+    "valor": 0.4273,
+    "variacao12m": -63.69
+   },
+   {
+    "id": "ltcbrl",
+    "valor": 251.3,
+    "variacao12m": -58.89
+   },
+   {
+    "id": "plag11",
+    "valor": 62,
+    "variacao12m": 25.25,
+    "dy": 10.16
+   },
+   {
+    "id": "mcci11",
+    "valor": 94.99,
+    "variacao12m": 11.49,
+    "dy": 12.63
+   },
+   {
+    "id": "kncr11",
+    "valor": 107.59,
+    "variacao12m": 2.56,
+    "dy": 13.32
+   },
+   {
+    "id": "cpts11",
+    "valor": 7.46,
+    "variacao12m": 1.22,
+    "dy": 14.41
+   },
+   {
+    "id": "brco11",
+    "valor": 113.1,
+    "variacao12m": 2.79,
+    "dy": 9.66
+   },
+   {
+    "id": "xpml11",
+    "valor": 99.9,
+    "variacao12m": -0.24,
+    "dy": 11.05
+   },
+   {
+    "id": "mxrf11",
+    "valor": 9.3,
+    "variacao12m": -2.72,
+    "dy": 12.84
+   },
+   {
+    "id": "visc11",
+    "valor": 102.08,
+    "variacao12m": -1.01,
+    "dy": 9.73
+   },
+   {
+    "id": "gare11",
+    "valor": 8.43,
+    "variacao12m": -6.33,
+    "dy": 10.83
+   },
+   {
+    "id": "xplg11",
+    "valor": 91.28,
+    "variacao12m": -7.01,
+    "dy": 10.78
+   },
+   {
+    "id": "rbrr11",
+    "valor": 73.63,
+    "variacao12m": -15.37,
+    "dy": 13.42
+   },
+   {
+    "id": "vale3",
+    "valor": 78.58,
+    "variacao12m": 41.84,
+    "dy": 7.14
+   },
+   {
+    "id": "itsa4",
+    "valor": 12.95,
+    "variacao12m": 18.15,
+    "dy": 8.7
+   },
+   {
+    "id": "bbse3",
+    "valor": 40.02,
+    "variacao12m": 22.99,
+    "dy": 11.47
+   },
+   {
+    "id": "cmin3",
+    "valor": 6,
+    "variacao12m": 15.83,
+    "dy": 6.43
+   },
+   {
+    "id": "cmig3",
+    "valor": 15.76,
+    "variacao12m": 5.07,
+    "dy": 8.86
+   },
+   {
+    "id": "amzo34",
+    "valor": 69.35,
+    "variacao12m": 10.68,
+    "dy": 0
+   },
+   {
+    "id": "bbas3",
+    "valor": 20.17,
+    "variacao12m": -4.18,
+    "dy": 2.73
+   },
+   {
+    "id": "viva3",
+    "valor": 21.97,
+    "variacao12m": -23.98,
+    "dy": 3.18
+   },
+   {
+    "id": "sp500",
+    "valor": 7711.76,
+    "variacao12m": 19.37
+   },
+   {
+    "id": "nasdaq",
+    "valor": 26402.42,
+    "variacao12m": 23.06
+   },
+   {
+    "id": "dowjones",
+    "valor": 53559.99,
+    "variacao12m": 17.6
+   },
+   {
+    "id": "vix",
+    "valor": 14.43,
+    "variacao12m": 0
+   },
+   {
+    "id": "voo",
+    "valor": 707.24,
+    "variacao12m": 19.25
+   },
+   {
+    "id": "pph",
+    "valor": 113.62,
+    "variacao12m": 27.84
+   },
+   {
+    "id": "nvda",
+    "valor": 217.55,
+    "variacao12m": 24.9
+   },
+   {
+    "id": "googl",
+    "valor": 346.59,
+    "variacao12m": 62.79
+   },
+   {
+    "id": "tsla",
+    "valor": 348.75,
+    "variacao12m": 4.46
+   },
+   {
+    "id": "aapl",
+    "valor": 319.7,
+    "variacao12m": 37.72
+   },
+   {
+    "id": "amzn",
+    "valor": 266.43,
+    "variacao12m": 16.34
+   },
+   {
+    "id": "ko",
+    "valor": 89.66,
+    "variacao12m": 29.96
+   },
+   {
+    "id": "crwd",
+    "valor": 218.4,
+    "variacao12m": 106.18
+   },
+   {
+    "id": "nke",
+    "valor": 39.6,
+    "variacao12m": -48.82
+   },
+   {
+    "id": "msft",
+    "valor": 513.53,
+    "variacao12m": 1.35
+   },
+   {
+    "id": "brent",
+    "valor": 90.34,
+    "variacao12m": 30.66
+   },
+   {
+    "id": "ouro",
+    "valor": 4469,
+    "variacao12m": 25.91
+   },
+   {
+    "id": "minerio",
+    "valor": 95.84,
+    "variacao12m": 57.91
+   }
+  ]
+ }
+];
+</script>
+<script>
+/* ==========================================================================
+   RADAR DE INVESTIMENTOS — APLICAÇÃO
+   Um único motor para três modos, escolhidos por body[data-pagina]:
+     "radar"      index.html                  → a edição da semana, com dado ao vivo
+     "historico"  historico.html              → a linha do tempo das edições
+     "arquivo"    historico/AAAA-MM-DD.html   → um snapshot congelado, sem rede
+   Você normalmente NÃO precisa mexer neste arquivo.
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  var PAGINA = document.body.dataset.pagina || "radar";
+
+  var HIST = (typeof RADAR_HISTORICO !== "undefined" && Array.isArray(RADAR_HISTORICO))
+    ? RADAR_HISTORICO.slice() : [];
+  HIST.sort(function (a, b) {                       // mais recente primeiro
+    return new Date(b.atualizadoEm) - new Date(a.atualizadoEm);
+  });
+
+  var edicaoAtiva = -1;   // -1 = edição atual; 0+ = índice em HIST
+  var cards = [];         // { el, ativo }
+
+  function $(id) { return document.getElementById(id); }
+
+  /* ====================================================================
+     1. FORMATAÇÃO
+     ==================================================================== */
+
+  function num(valor, casas) {
+    return valor.toLocaleString("pt-BR", {
+      minimumFractionDigits: casas, maximumFractionDigits: casas
+    });
+  }
+
+  function casasDe(ativo) {
+    if (typeof ativo.casas === "number") return ativo.casas;
+    return 2;      // sempre 2 casas: esconder decimal de um índice é falsear
+                   // o número. Quem precisa de mais declara `casas` no
+                   // dados.js — o câmbio usa 4.
+  }
+
+  function formatarValor(ativo) {
+    var corpo = num(ativo.valor, casasDe(ativo));
+    return {
+      prefixo: ativo.formato === "brl" ? "R$" : (ativo.formato === "usd" ? "US$" : ""),
+      corpo: ativo.formato === "percentual" ? corpo + "%" : corpo,
+      sufixo: ativo.sufixo || ""
+    };
+  }
+
+  /** Variação de taxas é medida em pontos percentuais, não em %. */
+  function unidade(ativo) {
+    return ativo.formato === "percentual" ? " p.p." : "%";
+  }
+
+  function calcularVariacao(atual, anterior, formato) {
+    if (anterior === null || anterior === undefined || !isFinite(anterior)) return null;
+    if (formato === "percentual") return atual - anterior;
+    if (anterior === 0) return null;
+    return (atual / anterior - 1) * 100;
+  }
+
+  function dataBonita(iso, comHora) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "—";
+    var base = String(d.getDate()).padStart(2, "0") + "/" +
+               String(d.getMonth() + 1).padStart(2, "0") + "/" + d.getFullYear();
+    if (!comHora) return base;
+    return base + " · " + String(d.getHours()).padStart(2, "0") + "h" +
+           String(d.getMinutes()).padStart(2, "0");
+  }
+
+  function dataCurta(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "—";
+    return String(d.getDate()).padStart(2, "0") + "/" +
+           String(d.getMonth() + 1).padStart(2, "0");
+  }
+
+  function dataRelativa(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return "";
+    var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    var alvo = new Date(d); alvo.setHours(0, 0, 0, 0);
+    var dias = Math.round((hoje - alvo) / 86400000);
+    if (dias <= 0) return "hoje";
+    if (dias === 1) return "ontem";
+    if (dias < 7) return "há " + dias + " dias";
+    if (dias < 14) return "há 1 semana";
+    if (dias < 60) return "há " + Math.floor(dias / 7) + " semanas";
+    return "há " + Math.floor(dias / 30) + " meses";
+  }
+
+  function escapar(txt) {
+    return String(txt).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  /** Só deixa passar link http(s) — evita javascript: vindo dos dados. */
+  function linkSeguro(url) {
+    return /^https?:\/\//i.test(url || "") ? escapar(url) : null;
+  }
+
+  /* ====================================================================
+     2. EDIÇÕES
+     Cada edição arquivada guarda só id + valores. Nome, formato e
+     descrição vêm sempre da definição atual em dados.js.
+     ==================================================================== */
+
+  function definicao(id) {
+    for (var i = 0; i < RADAR.ativos.length; i++) {
+      if (RADAR.ativos[i].id === id) return RADAR.ativos[i];
+    }
+    return null;
+  }
+
+  function edicao(indice) {
+    if (indice < 0) return RADAR;
+
+    var arq = HIST[indice];
+    var ativos = (arq.ativos || []).map(function (registro) {
+      var base = definicao(registro.id);
+      if (!base) return null;
+      var copia = Object.assign({}, base, registro);
+      delete copia.aoVivo; delete copia.aoVivoOk; delete copia._serieAoVivo;
+      return copia;
+    }).filter(Boolean);
+
+    return {
+      meta: { atualizadoEm: arq.atualizadoEm, responsavel: arq.responsavel },
+      resumo: arq.resumo || "",
+      destaques: arq.destaques || [],
+      agenda: arq.agenda || [],
+      calendarios: RADAR.calendarios,
+      ativos: ativos
+    };
+  }
+
+  /** Valor do mesmo ativo na edição imediatamente anterior à ativa. */
+  function valorAnterior(id) {
+    var alvo = edicaoAtiva + 1;
+    if (alvo >= HIST.length) return null;
+    var lista = HIST[alvo].ativos || [];
+    for (var i = 0; i < lista.length; i++) {
+      if (lista[i].id === id && isFinite(lista[i].valor)) return lista[i].valor;
+    }
+    return null;
+  }
+
+  /** Série do mini-gráfico: edições arquivadas + o valor da edição ativa. */
+  function serieDoAtivo(ativo) {
+    if (ativo._serieAoVivo && ativo._serieAoVivo.length > 1) return ativo._serieAoVivo;
+
+    var serie = [];
+    for (var i = HIST.length - 1; i > edicaoAtiva; i--) {   // do mais antigo
+      var lista = HIST[i].ativos || [];
+      for (var j = 0; j < lista.length; j++) {
+        if (lista[j].id === ativo.id && isFinite(lista[j].valor)) {
+          serie.push(lista[j].valor); break;
+        }
+      }
+    }
+    serie.push(ativo.valor);
+    return serie;
+  }
+
+  /* ====================================================================
+     3. MINI-GRÁFICO (sparkline em SVG puro)
+     ==================================================================== */
+
+  function sparkline(serie, subiu, largura, altura) {
+    largura = largura || 92; altura = altura || 30;
+    if (!serie || serie.length < 2) return "";
+
+    var min = Math.min.apply(null, serie);
+    var max = Math.max.apply(null, serie);
+    var amplitude = (max - min) || 1;
+    var passo = largura / (serie.length - 1);
+    var pad = 3;
+
+    var pontos = serie.map(function (v, i) {
+      var y = altura - pad - ((v - min) / amplitude) * (altura - pad * 2);
+      return (i * passo).toFixed(1) + "," + y.toFixed(1);
+    });
+
+    var cor = subiu ? "var(--alta)" : "var(--baixa)";
+    var area = "M0," + altura + " L" + pontos.join(" L") + " L" + largura + "," + altura + " Z";
+
+    // preserveAspectRatio="none" deixa o gráfico esticar quando o CSS o manda
+    // ocupar a largura toda no mobile; o traço é mantido fino pelo CSS.
+    return '<svg class="grafico" width="' + largura + '" height="' + altura +
+           '" viewBox="0 0 ' + largura + " " + altura +
+           '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
+             '<path class="grafico__area" d="' + area + '" fill="' + cor + '"/>' +
+             '<polyline class="grafico__linha" points="' + pontos.join(" ") +
+             '" stroke="' + cor + '"/>' +
+           "</svg>";
+  }
+
+  /* ====================================================================
+     4. CARDS
+     ==================================================================== */
+
+  function tom(valor, inverso) {
+    if (valor === null || valor === undefined || Math.abs(valor) < 0.005) return "neutro";
+    var positivo = valor > 0;
+    if (inverso) positivo = !positivo;
+    return positivo ? "alta" : "baixa";
+  }
+
+  function chip(rotulo, valor, ativo, titulo) {
+    var seta = valor > 0.005 ? "▲" : (valor < -0.005 ? "▼" : "■");
+    var sinal = valor > 0 ? "+" : "";
+    return '<span class="metrica metrica--' + tom(valor, ativo.inverso) +
+             '" title="' + escapar(titulo) + '">' +
+             '<span class="metrica__rot">' + rotulo + "</span>" +
+             '<span class="metrica__seta">' + seta + "</span>" +
+             sinal + num(valor, 2) + unidade(ativo) +
+           "</span>";
+  }
+
+  function metricasHtml(ativo) {
+    var partes = [];
+
+    var ant = valorAnterior(ativo.id);
+    if (ant !== null) {
+      var v = calcularVariacao(ativo.valor, ant, ativo.formato);
+      var quando = HIST[edicaoAtiva + 1] ? dataCurta(HIST[edicaoAtiva + 1].atualizadoEm) : "";
+      if (v !== null) partes.push(chip("vs. " + quando, v, ativo, "Variação desde a edição de " + quando));
+    }
+
+    if (isFinite(ativo.variacao12m) && ativo.variacao12m !== null) {
+      partes.push(chip("12m", ativo.variacao12m, ativo, "Variação em 12 meses"));
+    }
+
+    if (isFinite(ativo.dy) && ativo.dy !== null && ativo.dy !== undefined) {
+      partes.push('<span class="metrica metrica--dy" title="Dividend yield dos últimos 12 meses">' +
+                    '<span class="metrica__rot">DY</span>' + num(ativo.dy, 2) + "%</span>");
+    }
+
+    if (!partes.length) {
+      partes.push('<span class="metrica metrica--vazia" ' +
+                  'title="A variação aparece assim que houver uma edição anterior arquivada.">' +
+                  "sem variação registrada</span>");
+    }
+    return partes.join("");
+  }
+
+  function seloHtml(ativo) {
+    if (ativo.aoVivoOk) {
+      return '<span class="card__selo" data-selo title="Buscado agora na fonte pública">ao vivo</span>';
+    }
+    if (ativo.exemplo) {
+      return '<span class="card__selo card__selo--exemplo" data-selo ' +
+             'title="Número de exemplo: ainda não conferido">exemplo</span>';
+    }
+    return '<span class="card__selo card__selo--estatico" data-selo ' +
+           'title="Valor informado nesta edição">edição</span>';
+  }
+
+  function montarCard(ativo, grande) {
+    var el = document.createElement("article");
+    el.className = "card" + (grande ? " card--grande" : "");
+    el.dataset.id = ativo.id;
+
+    var f = formatarValor(ativo);
+    var serie = serieDoAtivo(ativo);
+    var subiu = serie.length > 1 ? serie[serie.length - 1] >= serie[0] : true;
+    if (ativo.inverso) subiu = !subiu;
+
+    el.innerHTML =
+      '<div class="card__topo">' +
+        "<div>" +
+          '<h4 class="card__nome">' + escapar(ativo.nome) + "</h4>" +
+          '<div class="card__ticker">' + escapar(ativo.ticker) + "</div>" +
+        "</div>" + seloHtml(ativo) +
+      "</div>" +
+
+      '<div class="card__meio">' +
+        '<div class="card__valor">' +
+          (f.prefixo ? '<span class="card__prefixo">' + f.prefixo + "</span> " : "") +
+          "<span data-corpo>" + f.corpo + "</span>" +
+          (f.sufixo ? '<span class="card__sufixo">' + escapar(f.sufixo) + "</span>" : "") +
+        "</div>" +
+        sparkline(serie, subiu, grande ? 108 : 88, grande ? 36 : 30) +
+      "</div>" +
+
+      '<div class="card__base">' +
+        '<div class="metricas">' + metricasHtml(ativo) + "</div>" +
+        '<button class="card__ajuda" type="button" aria-expanded="false" ' +
+                'aria-label="O que é ' + escapar(ativo.nome) + '?">?</button>' +
+      "</div>" +
+
+      '<div class="card__explicacao" hidden>' + escapar(ativo.descricao) +
+        (ativo.nota ? '<span class="card__nota">' + escapar(ativo.nota) + "</span>" : "") +
+        '<span class="card__fonte">Fonte: ' + escapar(ativo.fonte || "—") + "</span>" +
+      "</div>";
+
+    var botao = el.querySelector(".card__ajuda");
+    var caixa = el.querySelector(".card__explicacao");
+    botao.addEventListener("click", function () {
+      var aberto = !caixa.hidden;
+      caixa.hidden = aberto;
+      botao.setAttribute("aria-expanded", String(!aberto));
+      botao.textContent = aberto ? "?" : "×";
+    });
+
+    cards.push({ el: el, ativo: ativo });
+    return el;
+  }
+
+  /** Repinta um card depois que chega dado ao vivo. */
+  function repintarPorId(id) {
+    cards.filter(function (c) { return c.ativo.id === id; }).forEach(function (reg) {
+      var el = reg.el, ativo = reg.ativo, grande = el.classList.contains("card--grande");
+
+      el.querySelector("[data-corpo]").textContent = formatarValor(ativo).corpo;
+      el.querySelector(".metricas").innerHTML = metricasHtml(ativo);
+
+      var selo = el.querySelector("[data-selo]");
+      selo.outerHTML = seloHtml(ativo);
+
+      var serie = serieDoAtivo(ativo);
+      var subiu = serie.length > 1 ? serie[serie.length - 1] >= serie[0] : true;
+      if (ativo.inverso) subiu = !subiu;
+      var novo = sparkline(serie, subiu, grande ? 108 : 88, grande ? 36 : 30);
+      var antigo = el.querySelector(".grafico");
+      if (antigo) antigo.outerHTML = novo;
+      else if (novo) el.querySelector(".card__meio").insertAdjacentHTML("beforeend", novo);
+    });
+  }
+
+  /* ====================================================================
+     5. MONTAGEM DA PÁGINA
+     ==================================================================== */
+
+  function limpar(seletor) {
+    Array.prototype.forEach.call(document.querySelectorAll(seletor), function (n) {
+      n.innerHTML = "";
+    });
+  }
+
+  function texto(id, valor) { var el = $(id); if (el) el.textContent = valor; }
+
+  function montarAvisoExemplo(ativos) {
+    var aviso = $("avisoExemplo");
+    if (!aviso) return;
+    var pendentes = ativos.filter(function (a) { return a.exemplo; });
+    aviso.hidden = edicaoAtiva >= 0 || !pendentes.length;
+    if (aviso.hidden) return;
+    texto("qtdExemplo", pendentes.length);
+    texto("listaExemplo", pendentes.map(function (a) { return a.ticker; }).join(", "));
+  }
+
+  function montarAgenda(ed) {
+    var alvo = $("listaAgenda");
+    if (!alvo) return;
+
+    var hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    var dias = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+
+    alvo.innerHTML = (ed.agenda || []).map(function (item) {
+      var p = String(item.data).split("-");
+      var d = new Date(+p[0], +p[1] - 1, +p[2]);
+      var passado = edicaoAtiva < 0 && d < hoje;
+      var href = linkSeguro(item.link);
+
+      var miolo =
+        '<span class="agenda__data">' + p[2] + "/" + p[1] +
+          "<span>" + dias[d.getDay()] +
+          // hora é opcional: só entra quando o horário foi confirmado na fonte.
+          // Sem isso a linha mostrava "ter · undefined".
+          (item.hora ? " · " + escapar(item.hora) : "") + "</span></span>" +
+        '<span class="agenda__pais">' + escapar(item.pais) + "</span>" +
+        '<span class="agenda__evento">' + escapar(item.evento) +
+          (item.fonte ? '<span class="agenda__fonte">' + escapar(item.fonte) +
+                        (href ? " ↗" : "") + "</span>" : "") +
+        "</span>" +
+        '<span class="agenda__rel agenda__rel--' + escapar(item.relevancia) + '">' +
+          (item.relevancia === "alta" ? "alta" : "média") + "</span>";
+
+      var linha = href
+        ? '<a class="agenda__linha" href="' + href + '" target="_blank" rel="noopener noreferrer" ' +
+          'title="Abrir na fonte oficial: ' + escapar(item.fonte || href) + '">' + miolo + "</a>"
+        : '<div class="agenda__linha agenda__linha--sem-link">' + miolo + "</div>";
+
+      return '<li class="agenda__item' + (passado ? " agenda__item--passado" : "") + '">' +
+             linha + "</li>";
+    }).join("");
+
+    var cal = $("listaCalendarios");
+    if (cal) {
+      var lista = (ed.calendarios || []).filter(function (c) { return linkSeguro(c.link); });
+      cal.innerHTML = lista.length
+        ? '<span class="calendarios__rot">Calendários completos</span>' +
+          lista.map(function (c) {
+            return '<a href="' + linkSeguro(c.link) + '" target="_blank" rel="noopener noreferrer">' +
+                   escapar(c.nome) + " ↗</a>";
+          }).join("")
+        : "";
+    }
+
+    var secao = $("agenda");
+    if (secao) secao.hidden = !(ed.agenda || []).length;
+  }
+
+  function renderizar(ed) {
+    cards = [];
+    limpar("#cardsDestaque, .grade[data-grupo], #listaDestaques");
+
+    texto("dataAtualizacao", dataBonita(ed.meta.atualizadoEm, true));
+    texto("dataRelativa", dataRelativa(ed.meta.atualizadoEm));
+    texto("rodapeData", dataBonita(ed.meta.atualizadoEm, true));
+    texto("rodapeResponsavel", ed.meta.responsavel || "—");
+
+    montarAvisoExemplo(ed.ativos);
+    texto("resumoSemana", ed.resumo);
+
+    var destaqueAlvo = $("cardsDestaque");
+    if (destaqueAlvo) {
+      ed.ativos.filter(function (a) { return a.destaque; }).slice(0, 6)
+        .forEach(function (a) { destaqueAlvo.appendChild(montarCard(a, true)); });
+    }
+
+    var radarAlvo = $("listaDestaques");
+    if (radarAlvo) {
+      (ed.destaques || []).forEach(function (d) {
+        var el = document.createElement("article");
+        el.className = "destaque-item";
+        el.dataset.tom = d.tom || "neutro";
+        el.innerHTML = "<h3>" + escapar(d.titulo) + "</h3><p>" + escapar(d.texto) + "</p>";
+        radarAlvo.appendChild(el);
+      });
+      $("radar").hidden = !(ed.destaques || []).length;
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll(".grade[data-grupo]"), function (grade) {
+      var doGrupo = ed.ativos.filter(function (a) { return a.grupo === grade.dataset.grupo; });
+      doGrupo.forEach(function (a) { grade.appendChild(montarCard(a, false)); });
+      var titulo = grade.previousElementSibling;
+      grade.hidden = !doGrupo.length;
+      if (titulo && titulo.classList.contains("grupo__titulo")) titulo.hidden = !doGrupo.length;
+    });
+
+    montarAgenda(ed);
+  }
+
+  function montarGlossario() {
+    var alvo = $("listaGlossario");
+    if (!alvo) return;
+    (RADAR.glossario || []).forEach(function (g) {
+      var d = document.createElement("details");
+      d.innerHTML = "<summary>" + escapar(g.termo) + "</summary><p>" + escapar(g.texto) + "</p>";
+      alvo.appendChild(d);
+    });
+  }
+
+  /* ====================================================================
+     6. PÁGINA DE HISTÓRICO
+     ==================================================================== */
+
+  function trocarEdicao(indice) {
+    edicaoAtiva = indice;
+    renderizar(edicao(indice));
+
+    $("conteudoEdicao").hidden = false;
+    texto("faixaEdicaoData", dataBonita(HIST[indice].atualizadoEm, true));
+
+    var seletor = $("seletorEdicao");
+    if (seletor) seletor.value = String(indice);
+
+    Array.prototype.forEach.call(document.querySelectorAll(".edicao-item"), function (li) {
+      li.classList.toggle("edicao-item--ativa", +li.dataset.indice === indice);
+    });
+
+    try {
+      history.replaceState(null, "", "?e=" + indice);
+    } catch (e) { /* navegador antigo: segue sem atualizar a URL */ }
+  }
+
+  function iniciarHistorico() {
+    var lista = $("listaHistorico");
+
+    if (!HIST.length) {
+      lista.outerHTML =
+        '<div class="vazio">' +
+          "<p><strong>Nenhuma edição arquivada ainda.</strong></p>" +
+          "<p>A primeira edição vai para o arquivo quando a próxima for fechada. " +
+          "Isso acontece sozinho no comando <code>/atualizar-radar</code>, que roda " +
+          "<code>ferramentas/arquivar.mjs</code> antes de trocar os números.</p>" +
+          "<p>A partir daí esta página vira a linha do tempo do site: dá para reabrir " +
+          "qualquer semana passada, cada edição ganha também um arquivo congelado em " +
+          "<code>historico/AAAA-MM-DD.html</code>, os mini-gráficos dos cards começam " +
+          "a ser desenhados e cada card ganha a variação desde a edição anterior.</p>" +
+          '<p><a class="rodape__link" href="index.html">← Voltar ao radar da semana</a></p>' +
+        "</div>";
+      texto("dataAtualizacao", "—");
+      return;
+    }
+
+    // Linha do tempo
+    lista.innerHTML = HIST.map(function (e, i) {
+      return '<li class="edicao-item" data-indice="' + i + '">' +
+               '<div class="edicao-item__marca"></div>' +
+               '<div class="edicao-item__corpo">' +
+                 '<div class="edicao-item__topo">' +
+                   '<strong class="edicao-item__data">' + dataBonita(e.atualizadoEm, true) + "</strong>" +
+                   '<span class="edicao-item__meta">' + (e.ativos || []).length + " ativos · " +
+                     escapar(e.responsavel || "—") + "</span>" +
+                 "</div>" +
+                 (e.resumo ? "<p>" + escapar(e.resumo) + "</p>" : "") +
+                 '<div class="edicao-item__acoes">' +
+                   '<button type="button" class="edicao-item__btn">Ver esta edição</button>' +
+                   (e.arquivo && /^[\w./-]+\.html$/.test(e.arquivo)
+                     ? '<a class="edicao-item__btn edicao-item__btn--pagina" href="' +
+                       escapar(e.arquivo) + '" title="Abre o arquivo congelado daquele dia, ' +
+                       'exatamente como a página estava">Abrir a página daquele dia &rarr;</a>'
+                     : "") +
+                 "</div>" +
+               "</div>" +
+             "</li>";
+    }).join("");
+
+    Array.prototype.forEach.call(lista.querySelectorAll(".edicao-item__btn"), function (b) {
+      b.addEventListener("click", function () {
+        trocarEdicao(parseInt(b.closest(".edicao-item").dataset.indice, 10));
+        $("conteudoEdicao").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    // Seletor no topo
+    var caixa = $("caixaEdicao"), seletor = $("seletorEdicao");
+    caixa.hidden = false;
+    seletor.innerHTML = HIST.map(function (e, i) {
+      return '<option value="' + i + '">' + dataBonita(e.atualizadoEm) + "</option>";
+    }).join("");
+    seletor.addEventListener("change", function () {
+      trocarEdicao(parseInt(seletor.value, 10));
+    });
+
+    // Edição inicial: a do ?e= da URL, ou a mais recente
+    var pedida = parseInt((location.search.match(/[?&]e=(\d+)/) || [])[1], 10);
+    trocarEdicao(isFinite(pedida) && pedida >= 0 && pedida < HIST.length ? pedida : 0);
+  }
+
+  /* ====================================================================
+     7. CONTROLES (tema, navegação)
+     ==================================================================== */
+
+  function ligarTema() {
+    var raiz = document.documentElement;
+    var salvo = localStorage.getItem("radar:tema");
+    if (salvo) raiz.dataset.tema = salvo;
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches)
+      raiz.dataset.tema = "claro";
+
+    $("btnTema").addEventListener("click", function () {
+      var novo = raiz.dataset.tema === "claro" ? "escuro" : "claro";
+      raiz.dataset.tema = novo;
+      localStorage.setItem("radar:tema", novo);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", novo === "claro" ? "#f5f7fb" : "#0b0f17");
+    });
+  }
+
+  function ajustarAlturaTopo() {
+    document.documentElement.style.setProperty(
+      "--topo-alt", document.querySelector(".topo").offsetHeight + "px");
+  }
+
+  function ligarNavegacao() {
+    var links = document.querySelectorAll("#navLinks a");
+    var mapa = {};
+    Array.prototype.forEach.call(links, function (a) {
+      var href = a.getAttribute("href");
+      if (href && href.charAt(0) === "#") mapa[href.slice(1)] = a;   // ignora links de página
+    });
+
+    if ("IntersectionObserver" in window) {
+      var obs = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (e) {
+          var a = mapa[e.target.id];
+          if (!a || !e.isIntersecting) return;
+          Array.prototype.forEach.call(links, function (o) { o.classList.remove("ativo"); });
+          a.classList.add("ativo");
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      Object.keys(mapa).forEach(function (id) {
+        var s = $(id);
+        if (s) obs.observe(s);
+      });
+    }
+
+    var btn = $("btnTopo");
+    window.addEventListener("scroll", function () {
+      btn.classList.toggle("visivel", window.scrollY > 700);
+    }, { passive: true });
+    btn.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  /* ====================================================================
+     8. DADOS AO VIVO (APIs públicas, sem cadastro)
+     • AwesomeAPI          → dólar, euro e criptomoedas
+     • Banco Central (SGS) → Selic, CDI, IPCA e IGP-M
+     Se qualquer chamada falhar, fica valendo o valor de dados.js.
+     ==================================================================== */
+
+  function chipDados(texto, ok) {
+    var alvo = $("statusDados");
+    if (!alvo) return;
+    var el = document.createElement("span");
+    el.className = "mercado" + (ok ? " mercado--aberto" : "");
+    el.innerHTML = '<span class="mercado__bolinha"></span>' + texto;
+    alvo.appendChild(el);
+  }
+
+  function jsonComTimeout(url, ms) {
+    var ctrl = ("AbortController" in window) ? new AbortController() : null;
+    var t = setTimeout(function () { if (ctrl) ctrl.abort(); }, ms || 9000);
+    return fetch(url, ctrl ? { signal: ctrl.signal } : undefined)
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .finally(function () { clearTimeout(t); });
+  }
+
+  function amostrar(serie, quantos) {
+    if (serie.length <= quantos) return serie.slice();
+    var passo = (serie.length - 1) / (quantos - 1), fora = [];
+    for (var i = 0; i < quantos; i++) fora.push(serie[Math.round(i * passo)]);
+    return fora;
+  }
+
+  /* Pontos = [{ data: Date, valor: Number }]. Cada série pública tem uma
+     frequência e uma ordem próprias, então comparamos por DATA, nunca por
+     posição no array. */
+  function aplicarSerie(ativo, pontos) {
+    var hoje = new Date(); hoje.setHours(23, 59, 59, 999);
+    pontos = pontos
+      .filter(function (p) {
+        return p.data instanceof Date && !isNaN(p.data) && isFinite(p.valor) && p.data <= hoje;
+      })
+      .sort(function (a, b) { return a.data - b.data; });
+    if (!pontos.length) return false;
+
+    var ult = pontos[pontos.length - 1];
+    var limite = new Date(ult.data.getTime() - 365 * 86400000);
+    var haUmAno = null;
+    for (var i = pontos.length - 1; i >= 0; i--) {
+      if (pontos[i].data <= limite) { haUmAno = pontos[i].valor; break; }
+    }
+    // Se a série não chega a 365 dias, usa o ponto mais antigo — desde que
+    // cubra pelo menos 300 dias, senão não daria para chamar de "12 meses".
+    if (haUmAno === null) {
+      if ((ult.data - pontos[0].data) / 86400000 >= 300) haUmAno = pontos[0].valor;
+    }
+
+    ativo.valor = ult.valor;
+    ativo.variacao12m = calcularVariacao(ult.valor, haUmAno, ativo.formato);
+    ativo._serieAoVivo = amostrar(pontos.map(function (p) { return p.valor; }), 12);
+    ativo.aoVivoOk = true;
+    delete ativo.exemplo;
+    return true;
+  }
+
+  /* --- AwesomeAPI: moedas e criptomoedas --- */
+  function buscarMoedas() {
+    var pares = RADAR.ativos
+      .filter(function (a) { return /^moeda-/.test(a.aoVivo || ""); })
+      .map(function (a) { return { id: a.id, par: a.aoVivo.slice(6) + "-BRL" }; });
+
+    return Promise.all(pares.map(function (p) {
+      return jsonComTimeout("https://economia.awesomeapi.com.br/json/daily/" + p.par + "/400")
+        .then(function (lista) {
+          var ativo = definicao(p.id);
+          if (!ativo || !Array.isArray(lista) || !lista.length) return false;
+          var ok = aplicarSerie(ativo, lista.map(function (d) {
+            return { data: new Date(parseInt(d.timestamp, 10) * 1000), valor: parseFloat(d.bid) };
+          }));
+          if (ok) repintarPorId(p.id);
+          return ok;
+        })
+        .catch(function () { return false; });
+    })).then(function (r) { return r.some(Boolean); });
+  }
+
+  /* --- Banco Central (SGS) ---
+     O endpoint "ultimos/N" tem um teto baixo e devolve os registros em ordens
+     diferentes conforme a série — por isso usamos o intervalo de datas. */
+  function ddmmaaaa(d) {
+    return String(d.getDate()).padStart(2, "0") + "/" +
+           String(d.getMonth() + 1).padStart(2, "0") + "/" + d.getFullYear();
+  }
+
+  function sgs(codigo, diasAtras) {
+    var fim = new Date(), inicio = new Date(fim.getTime() - diasAtras * 86400000);
+    return jsonComTimeout(
+      "https://api.bcb.gov.br/dados/serie/bcdata.sgs." + codigo + "/dados?formato=json" +
+      "&dataInicial=" + ddmmaaaa(inicio) + "&dataFinal=" + ddmmaaaa(fim)
+    ).then(function (lista) {
+      return lista.map(function (d) {
+        var p = String(d.data).split("/");
+        return {
+          data: new Date(+p[2], +p[1] - 1, +p[0]),
+          valor: parseFloat(String(d.valor).replace(",", "."))
+        };
+      });
+    });
+  }
+
+  function buscarMacro() {
+    var tarefas = [];
+
+    [["selic", 432, 400], ["cdi", 4389, 400],
+     ["ipca12", 13522, 800], ["ipcaMes", 433, 800]].forEach(function (t) {
+      tarefas.push(sgs(t[1], t[2]).then(function (pontos) {
+        var ativo = definicao(t[0]);
+        if (!ativo) return false;
+        var ok = aplicarSerie(ativo, pontos);
+        if (ok) repintarPorId(t[0]);
+        return ok;
+      }).catch(function () { return false; }));
+    });
+
+    // IGP-M: a série 189 é mensal. Compomos os 12 meses de cada ponto para
+    // chegar ao acumulado em 12 meses, que é o número que o mercado cita.
+    tarefas.push(sgs(189, 1200).then(function (mensal) {
+      var ativo = definicao("igpm");
+      if (!ativo || mensal.length < 13) return false;
+      mensal.sort(function (a, b) { return a.data - b.data; });
+      var acumulada = [];
+      for (var fim = 11; fim < mensal.length; fim++) {
+        var fator = 1;
+        for (var i = fim - 11; i <= fim; i++) fator *= (1 + mensal[i].valor / 100);
+        acumulada.push({ data: mensal[fim].data, valor: (fator - 1) * 100 });
+      }
+      var ok = aplicarSerie(ativo, acumulada);
+      if (ok) repintarPorId("igpm");
+      return ok;
+    }).catch(function () { return false; }));
+
+    return Promise.all(tarefas).then(function (r) { return r.some(Boolean); });
+  }
+
+  function atualizarAoVivo() {
+    if (location.protocol === "file:") {
+      chipDados("Dados ao vivo: abra o site por um servidor", false);
+      return;
+    }
+    Promise.all([buscarMoedas(), buscarMacro()]).then(function (r) {
+      if (r[0] && r[1]) chipDados("Câmbio, cripto e juros <strong>ao vivo</strong>", true);
+      else if (r[0] || r[1]) chipDados("Parte dos dados <strong>ao vivo</strong>", true);
+      else chipDados("Dados ao vivo indisponíveis agora", false);
+      montarAvisoExemplo(RADAR.ativos);
+    });
+  }
+
+  /* ====================================================================
+     10. INÍCIO
+     ==================================================================== */
+
+  function iniciar() {
+    if (typeof RADAR === "undefined") {
+      $("conteudo").innerHTML = '<div class="container"><p class="vazio">' +
+        "Não foi possível carregar <code>js/dados.js</code>.</p></div>";
+      return;
+    }
+    ligarTema();
+
+    if (PAGINA === "historico") {
+      iniciarHistorico();
+    } else {
+      renderizar(RADAR);
+      montarGlossario();
+      if (PAGINA === "arquivo") {
+        // Edição congelada (historico/AAAA-MM-DD.html): os números são do dia
+        // em que ela esteve no ar. Buscar dado novo aqui estragaria o arquivo.
+        chipDados("Valores congelados nesta edição", false);
+      } else {
+        var badge = $("qtdEdicoes");
+        if (badge && HIST.length) { badge.textContent = HIST.length; badge.hidden = false; }
+        atualizarAoVivo();
+      }
+    }
+
+    ligarNavegacao();
+    ajustarAlturaTopo();
+    window.addEventListener("resize", ajustarAlturaTopo);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", iniciar);
+  else iniciar();
+})();
+
+</script>
+</body>
+</html>
